@@ -1,0 +1,19 @@
+.layout {
+    --sidebar-width: 200px;
+}
+
+.layout.sidebar-collapsed {
+    --sidebar-width: 50px;
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    transition: width 0.2s;
+}
+
+.content {
+    margin-left: var(--sidebar-width);
+    transition: margin-left 0.2s;
+    height: 100vh;
+    overflow: hidden;
+}
