@@ -2,6 +2,6 @@ package pl.coderslab.backend.stage;
 
 public class StageMapper {
     public static StageDTO toDTO(Stage stage){
-        return new StageDTO(stage.getId(), stage.getName());
+        return new StageDTO(stage.getId(), stage.getName(), stage.getDescription());
     }
 }
