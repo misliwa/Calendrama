@@ -12,7 +12,7 @@ import java.util.Optional;
 public class StageService {
     private final StageRepository repository;
 
-    public List<StageDTO> findAll(){
+    public List<StageDTO> findAll() {
         return repository.findAll()
                 .stream()
                 .map(StageMapper::toDTO)
@@ -20,12 +20,22 @@ public class StageService {
     }
 
     public StageDTO findById(Long id) {
-        Optional<Stage> optionalStage = repository.findById(id);
+        Stage stage = repository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(String.format("Stage with id %d not found", id))
+        );
 
-        if(optionalStage.isPresent()){
-            return StageMapper.toDTO(optionalStage.get());
-        }else{
-            throw new ResourceNotFoundException(String.format("Stage with id %d not found", id));
-        }
+        return StageMapper.toDTO(stage);
+    }
+
+    public StageDTO updateById(Long id, StageDTO stageDTO){
+        Stage stage = repository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(String.format("Stage with id %d not found", id))
+        );
+
+        stage.setName(stageDTO.name());
+        stage.setDescription(stageDTO.description());
+        stage = repository.save(stage);
+
+        return StageMapper.toDTO(stage);
     }
 }
