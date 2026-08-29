@@ -19,6 +19,14 @@ public class StageService {
                 .toList();
     }
 
+    public StageDTO create(StageDTO stageDTO){
+        Stage stage = StageMapper.toEntity(stageDTO);
+
+        stage = repository.save(stage);
+
+        return StageMapper.toDTO(stage);
+    }
+
     public StageDTO findById(Long id) {
         Stage stage = repository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Stage with id %d not found", id))

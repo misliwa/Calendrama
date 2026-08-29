@@ -1,5 +1,7 @@
 package pl.coderslab.backend.stage;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +22,18 @@ public class StageController {
         return ResponseEntity.ok(stageService.findAll());
     }
 
+    @PostMapping("")
+    public ResponseEntity<StageDTO> create(@Valid @RequestBody StageDTO stageDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(stageService.create(stageDTO));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<StageDTO> findById(@PathVariable("id") Long id){
         return ResponseEntity.ok(stageService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StageDTO> updateById(@PathVariable("id") Long id, @RequestBody StageDTO stageDTO){
+    public ResponseEntity<StageDTO> updateById(@PathVariable("id") Long id, @Valid @RequestBody StageDTO stageDTO){
         return ResponseEntity.ok(stageService.updateById(id, stageDTO));
     }
 }
