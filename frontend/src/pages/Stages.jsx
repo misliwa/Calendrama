@@ -29,6 +29,7 @@ function Stages(){
                 const stages = await getStages();
                 setStages(stages);
             }catch (e){
+                setError(e);
                 console.log(e.status + " " + e.code + " " + e.message);
             }finally {
                 setLoading(false);
@@ -39,11 +40,17 @@ function Stages(){
     return (
         <PageLayout title="Sceny">
             <SearchBar />
-            {error && <div>{error}</div>}
             {loading ? (
                 <div>Loading...</div>
+            ) : error ? (
+                <div className="alert alert-danger">
+                    {error.message ?? "Podczas ładowania wystąpił błąd"}
+                </div>
             ) : (
-                <DataTable columns={stageColumns} data={stages}></DataTable>
+                <DataTable
+                    columns={stageColumns}
+                    data={stages}
+                />
             )}
 
         </PageLayout>
