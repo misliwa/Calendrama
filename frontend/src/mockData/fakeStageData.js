@@ -2,7 +2,7 @@ const fakeStageData = {
    columns: [
        {
            name: "id",
-           getValue: stage => stage.name
+           getValue: stage => stage.id
        },
        {
            name: "Nazwa",
