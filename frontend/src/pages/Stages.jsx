@@ -19,7 +19,7 @@ const stageColumns = [
     },
 ];
 
-function Stages(){
+function Stages() {
     const [stages, setStages] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -48,15 +48,40 @@ function Stages(){
         }
     };
 
+    const handleDeleteSelected = async (selectedStageIds) => {
+        const confirmed = window.confirm(
+            `Czy na pewno chcesz usunąć ${selectedStageIds.length} zaznaczonych scen?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            setError(null);
+
+            await Promise.all(
+                selectedStageIds.map(stageId => deleteStage(stageId))
+            );
+
+            setStages(previousStages =>
+                previousStages.filter(stage => !selectedStageIds.includes(stage.id))
+            );
+        } catch (error) {
+            setError(error);
+        }
+
+    };
+
     useEffect(() => {
         const loadStages = async () => {
             try {
                 const stages = await getStages();
                 setStages(stages);
-            }catch (e){
+            } catch (e) {
                 setError(e);
                 console.log(e.status + " " + e.code + " " + e.message);
-            }finally {
+            } finally {
                 setLoading(false);
             }
         }
@@ -64,7 +89,7 @@ function Stages(){
     }, []);
     return (
         <PageLayout title="Sceny">
-            <SearchBar />
+            <SearchBar/>
             {error &&
                 <div className="alert alert-danger">
                     {error.message}
@@ -77,6 +102,7 @@ function Stages(){
                     columns={stageColumns}
                     data={stages}
                     onDelete={handleDelete}
+                    onDeleteSelected={handleDeleteSelected}
                 />
             )}
 
