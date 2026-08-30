@@ -36,4 +36,10 @@ public class StageController {
     public ResponseEntity<StageDTO> updateById(@PathVariable("id") Long id, @Valid @RequestBody StageDTO stageDTO){
         return ResponseEntity.ok(stageService.updateById(id, stageDTO));
     }
+
+    @DeleteMapping("{/id}")
+    public ResponseEntity<Void> deleteById(@PathVariable("id") Long id){
+        stageService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

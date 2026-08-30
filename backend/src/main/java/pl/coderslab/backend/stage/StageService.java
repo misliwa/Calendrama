@@ -19,7 +19,7 @@ public class StageService {
                 .toList();
     }
 
-    public StageDTO create(StageDTO stageDTO){
+    public StageDTO create(StageDTO stageDTO) {
         Stage stage = StageMapper.toEntity(stageDTO);
 
         stage = repository.save(stage);
@@ -29,15 +29,15 @@ public class StageService {
 
     public StageDTO findById(Long id) {
         Stage stage = repository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(String.format("Stage with id %d not found", id))
+                new ResourceNotFoundException(id, Stage.class.getName())
         );
 
         return StageMapper.toDTO(stage);
     }
 
-    public StageDTO updateById(Long id, StageDTO stageDTO){
+    public StageDTO updateById(Long id, StageDTO stageDTO) {
         Stage stage = repository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(String.format("Stage with id %d not found", id))
+                new ResourceNotFoundException(id, Stage.class.getName())
         );
 
         stage.setName(stageDTO.name());
@@ -45,5 +45,14 @@ public class StageService {
         stage = repository.save(stage);
 
         return StageMapper.toDTO(stage);
+    }
+
+    public void deleteById(Long id) {
+        Stage stage = repository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(id, Stage.class.getName())
+                );
+
+        repository.delete(stage);
     }
 }
