@@ -29,7 +29,7 @@ public class StageService {
 
     public StageDTO findById(Long id) {
         Stage stage = repository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(id, Stage.class.getName())
+                new ResourceNotFoundException(Stage.class.getSimpleName(), id)
         );
 
         return StageMapper.toDTO(stage);
@@ -37,7 +37,7 @@ public class StageService {
 
     public StageDTO updateById(Long id, StageDTO stageDTO) {
         Stage stage = repository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(id, Stage.class.getName())
+                new ResourceNotFoundException(Stage.class.getSimpleName(), id)
         );
 
         stage.setName(stageDTO.name());
@@ -50,7 +50,7 @@ public class StageService {
     public void deleteById(Long id) {
         Stage stage = repository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException(id, Stage.class.getName())
+                        new ResourceNotFoundException(Stage.class.getSimpleName(), id)
                 );
 
         repository.delete(stage);

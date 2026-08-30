@@ -37,7 +37,7 @@ public class StageController {
         return ResponseEntity.ok(stageService.updateById(id, stageDTO));
     }
 
-    @DeleteMapping("{/id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable("id") Long id){
         stageService.deleteById(id);
         return ResponseEntity.noContent().build();

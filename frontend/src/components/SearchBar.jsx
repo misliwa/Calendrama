@@ -1,4 +1,4 @@
-function EmployeeSearchBar(){
+function SearchBar(){
     return (
         <form>
             <div className="input-group">
@@ -6,7 +6,7 @@ function EmployeeSearchBar(){
                     type="text"
                     className="form-control"
                     name="surname"
-                    placeholder="Nazwisko pracownika"/>
+                    placeholder="Wpisz wyszukiwaną frazę"/>
 
                 <button className="btn btn-primary" type="submit">
                     Wyszukaj
@@ -17,4 +17,4 @@ function EmployeeSearchBar(){
     );
 }
 
-export default EmployeeSearchBar;
+export default SearchBar;
