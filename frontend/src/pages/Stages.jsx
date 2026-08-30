@@ -2,26 +2,51 @@ import PageLayout from "../components/PageLayout.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
 import {useEffect, useState} from "react";
-import {getStages} from "../api/stages.js";
+import {deleteStage, getStages} from "../api/stages.js";
+
+const stageColumns = [
+    {
+        name: "id",
+        getValue: stage => stage.id
+    },
+    {
+        name: "Nazwa",
+        getValue: stage => stage.name
+    },
+    {
+        name: "Opis",
+        getValue: stage => stage.description
+    },
+];
 
 function Stages(){
     const [stages, setStages] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    const stageColumns = [
-        {
-            name: "id",
-            getValue: stage => stage.id
-        },
-        {
-            name: "Nazwa",
-            getValue: stage => stage.name
-        },
-        {
-            name: "Opis",
-            getValue: stage => stage.description
-        },
-    ];
+
+
+    const handleDelete = async (stageId) => {
+        const confirmed = window.confirm(
+            "Czy na pewno chcesz usunąć tę scenę?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+            setError(null);
+
+            await deleteStage(stageId);
+
+            setStages(previousStages =>
+                previousStages.filter(stage => stage.id !== stageId)
+            );
+        } catch (error) {
+            setError(error);
+        }
+    };
 
     useEffect(() => {
         const loadStages = async () => {
@@ -40,16 +65,18 @@ function Stages(){
     return (
         <PageLayout title="Sceny">
             <SearchBar />
+            {error &&
+                <div className="alert alert-danger">
+                    {error.message}
+                </div>
+            }
             {loading ? (
                 <div>Loading...</div>
-            ) : error ? (
-                <div className="alert alert-danger">
-                    {error.message ?? "Podczas ładowania wystąpił błąd"}
-                </div>
             ) : (
                 <DataTable
                     columns={stageColumns}
                     data={stages}
+                    onDelete={handleDelete}
                 />
             )}
 

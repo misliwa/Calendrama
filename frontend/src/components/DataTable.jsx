@@ -1,7 +1,7 @@
 import EmployeeRow from "./EmployeeRow.jsx";
 import {useState} from "react";
 
-function DataTable({columns, data}) {
+function DataTable({columns, data, onDelete}) {
 
     const [selectedRows, setselectedRows] = useState([]);
 
@@ -30,6 +30,7 @@ function DataTable({columns, data}) {
                         <th>
                             <input type="checkbox"
                                    checked={
+                                       data.length > 0 &&
                                        selectedRows.length === data.length
                                    }
                                    onChange={handleSelectAll}
@@ -63,7 +64,7 @@ function DataTable({columns, data}) {
                                     Edytuj
                                 </button>
 
-                                <button className="btn btn-danger btn-sm user-select-none">
+                                <button className="btn btn-danger btn-sm user-select-none" onClick={() => onDelete(row.id)}>
                                     Usuń
                                 </button>
                             </td>
