@@ -3,9 +3,6 @@ package pl.coderslab.backend.profession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
-import pl.coderslab.backend.stage.Stage;
-import pl.coderslab.backend.stage.StageDTO;
-import pl.coderslab.backend.stage.StageMapper;
 
 
 import java.util.List;

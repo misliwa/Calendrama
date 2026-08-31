@@ -11,35 +11,35 @@ import java.util.List;
 @RequestMapping("/api/stages")
 public class StageController {
 
-    private final StageService stageService;
+    private final StageService service;
 
-    public StageController(StageService stageService) {
-        this.stageService = stageService;
+    public StageController(StageService service) {
+        this.service = service;
     }
 
     @GetMapping("")
     public ResponseEntity<List<StageDTO>> findAll(){
-        return ResponseEntity.ok(stageService.findAll());
+        return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping("")
     public ResponseEntity<StageDTO> create(@Valid @RequestBody StageDTO stageDTO){
-        return ResponseEntity.status(HttpStatus.CREATED).body(stageService.create(stageDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(stageDTO));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StageDTO> findById(@PathVariable("id") Long id){
-        return ResponseEntity.ok(stageService.findById(id));
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<StageDTO> updateById(@PathVariable("id") Long id, @Valid @RequestBody StageDTO stageDTO){
-        return ResponseEntity.ok(stageService.updateById(id, stageDTO));
+        return ResponseEntity.ok(service.updateById(id, stageDTO));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable("id") Long id){
-        stageService.deleteById(id);
+        service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
