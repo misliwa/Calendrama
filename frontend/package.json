@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@fullcalendar/react": "7.0.2",
+    "@mantine/core": "9.5.2",
+    "@mantine/form": "9.5.2",
+    "@mantine/hooks": "9.5.2",
     "bootstrap": "5.3.8",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
