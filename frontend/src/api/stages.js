@@ -16,7 +16,7 @@ export const stageColumns = [
     },
 ];
 
-export const addStageAPI = async (stage) => {
+export const addStage = async (stage) => {
     const response = await fetch(`${API_BASE_URL}/stages`,
         {
             method: "POST",
@@ -38,7 +38,7 @@ export const addStageAPI = async (stage) => {
     return body;
 }
 
-export const updateStageAPI = async (id, stage) => {
+export const updateStage = async (id, stage) => {
     const response = await fetch(`${API_BASE_URL}/stages/${id}`,
         {
             method: "PUT",
@@ -60,7 +60,7 @@ export const updateStageAPI = async (id, stage) => {
     return body;
 }
 
-export const getStagesAPI = async () => {
+export const getStages = async () => {
     const response = await fetch(`${API_BASE_URL}/stages`);
     const body = await response.json();
 
@@ -75,7 +75,7 @@ export const getStagesAPI = async () => {
     return body;
 }
 
-export const deleteStageAPI = async (id) => {
+export const deleteStage = async (id) => {
     const response = await fetch(`${API_BASE_URL}/stages/${id}`,
         {method: "DELETE"});
 

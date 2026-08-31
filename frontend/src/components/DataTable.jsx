@@ -44,7 +44,7 @@ function DataTable({columns, data, onAdd, onEdit, onDelete, onDeleteSelected}) {
                     </thead>
                     <tbody>
                     {data.map((row) => (
-                        <tr key = {row.id}>
+                        <tr key={row.id}>
                             <td>
                                 <input
                                     type="checkbox"
@@ -53,19 +53,20 @@ function DataTable({columns, data, onAdd, onEdit, onDelete, onDeleteSelected}) {
                                 />
                             </td>
                             {columns.map(column => (
-                                  <td key={column.name}>
-                                      {column.getValue(row)}
-                                  </td>
-                                ))}
+                                <td key={column.name}>
+                                    {column.getValue(row)}
+                                </td>
+                            ))}
 
                             <td className="text-end">
                                 <button className="btn btn-primary btn-sm me-2 user-select-none"
-                                    onClick={() => onEdit(row)}
+                                        onClick={() => onEdit(row)}
                                 >
                                     Edytuj
                                 </button>
 
-                                <button className="btn btn-danger btn-sm user-select-none" onClick={() => onDelete(row.id)}>
+                                <button className="btn btn-danger btn-sm user-select-none"
+                                        onClick={() => onDelete(row.id)}>
                                     Usuń
                                 </button>
                             </td>
@@ -79,7 +80,10 @@ function DataTable({columns, data, onAdd, onEdit, onDelete, onDeleteSelected}) {
                     Dodaj
                 </button>
 
-                <button className="btn btn-danger btn-sm text-end" onClick={() => onDeleteSelected(selectedRows)}>
+                <button className="btn btn-danger btn-sm text-end"
+                        onClick={() => onDeleteSelected(selectedRows)}
+                        disabled={selectedRows.length === 0}
+                >
                     Usuń zaznaczone
                 </button>
 

@@ -2,7 +2,7 @@ import PageLayout from "../components/PageLayout.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
 import {useEffect, useState} from "react";
-import {addStageAPI, deleteStageAPI, getStagesAPI, stageColumns, updateStageAPI} from "../api/stages.js";
+import * as stageApi from "../api/stages.js";
 import {useDisclosure} from "@mantine/hooks";
 import StageModal from "../components/StageModal.jsx";
 
@@ -18,7 +18,7 @@ function Stages() {
     const addStage = async (stage) => {
         try {
             setError(null);
-            const createdStage = await addStageAPI(stage);
+            const createdStage = await stageApi.addStage(stage);
             setStages(previousStages => [...previousStages, createdStage]);
         } catch (error) {
             setError(error);
@@ -31,7 +31,7 @@ function Stages() {
         try {
             setError(null);
 
-            const updatedStage = await updateStageAPI(stageId, stage);
+            const updatedStage = await stageApi.updateStage(stageId, stage);
 
             setStages(previousStages => previousStages
                 .map(stage =>
@@ -74,7 +74,7 @@ function Stages() {
         try {
             setError(null);
 
-            await deleteStageAPI(stageId);
+            await stageApi.deleteStage(stageId);
 
             setStages(previousStages =>
                 previousStages.filter(stage => stage.id !== stageId)
@@ -97,7 +97,7 @@ function Stages() {
             setError(null);
 
             await Promise.all(
-                selectedStageIds.map(stageId => deleteStageAPI(stageId))
+                selectedStageIds.map(stageId => stageApi.deleteStage(stageId))
             );
 
             setStages(previousStages =>
@@ -111,7 +111,7 @@ function Stages() {
 
     const loadStages = async () => {
         try {
-            const stages = await getStagesAPI();
+            const stages = await stageApi.getStages();
             setStages(stages);
         } catch (e) {
             setError(e);
@@ -137,7 +137,7 @@ function Stages() {
                 <div>Loading...</div>
             ) : (
                 <DataTable
-                    columns={stageColumns}
+                    columns={stageApi.stageColumns}
                     data={stages}
                     onAdd={handleOpenAddModal}
                     onEdit={handleOpenEditModal}
