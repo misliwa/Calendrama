@@ -15,22 +15,22 @@ public class PlayController {
     private final PlayService service;
 
     @GetMapping("")
-    public ResponseEntity<List<PlayDTO>> findAll(){
+    public ResponseEntity<List<PlayResponseDTO>> findAll(){
         return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping("")
-    public ResponseEntity<PlayDTO> create(@Valid @RequestBody PlayDTO playDTO){
+    public ResponseEntity<PlayResponseDTO> create(@Valid @RequestBody PlayRequestDTO playDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(playDTO));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlayDTO> findById(@PathVariable("id") Long id){
+    public ResponseEntity<PlayResponseDTO> findById(@PathVariable("id") Long id){
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PlayDTO> updateById(@PathVariable("id") Long id, @Valid @RequestBody PlayDTO playDTO){
+    public ResponseEntity<PlayResponseDTO> updateById(@PathVariable("id") Long id, @Valid @RequestBody PlayRequestDTO playDTO){
         return ResponseEntity.ok(service.updateById(id, playDTO));
     }
 

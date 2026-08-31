@@ -3,7 +3,6 @@ package pl.coderslab.backend.play;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
-import pl.coderslab.backend.profession.Profession;
 import pl.coderslab.backend.stage.Stage;
 import pl.coderslab.backend.stage.StageRepository;
 
@@ -17,24 +16,24 @@ public class PlayService {
     private final String RESOURCE_NAME = Play.class.getSimpleName();
 
 
-    public List<PlayDTO> findAll() {
+    public List<PlayResponseDTO> findAll() {
         return playRepository.findAll()
                 .stream()
                 .map(PlayMapper::toDTO)
                 .toList();
     }
 
-    public PlayDTO create(PlayDTO playDTO) {
-        Stage stage = getStage(playDTO.stageId());
+    public PlayResponseDTO create(PlayRequestDTO playRequestDTO) {
+        Stage stage = getStage(playRequestDTO.stageId());
 
-        Play play = PlayMapper.toEntity(playDTO, stage);
+        Play play = PlayMapper.toEntity(playRequestDTO, stage);
 
         play = playRepository.save(play);
 
         return PlayMapper.toDTO(play);
     }
 
-    public PlayDTO findById(Long id) {
+    public PlayResponseDTO findById(Long id) {
         Play play = playRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(RESOURCE_NAME, id)
         );
@@ -42,15 +41,15 @@ public class PlayService {
         return PlayMapper.toDTO(play);
     }
 
-    public PlayDTO updateById(Long id, PlayDTO playDTO) {
+    public PlayResponseDTO updateById(Long id, PlayRequestDTO playRequestDTO) {
         Play play = playRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(RESOURCE_NAME, id)
         );
 
 
-        Stage updatedStage = getStage(playDTO.stageId());
+        Stage updatedStage = getStage(playRequestDTO.stageId());
 
-        PlayMapper.updateEntity(play, playDTO, updatedStage);
+        PlayMapper.updateEntity(play, playRequestDTO, updatedStage);
 
         play = playRepository.save(play);
 
