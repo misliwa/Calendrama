@@ -4,17 +4,16 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.backend.stage.StageDTO;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/professions")
-public class ProfessionsController {
+public class ProfessionController {
 
     private final ProfessionService service;
 
-    public ProfessionsController(ProfessionService professionService) {
+    public ProfessionController(ProfessionService professionService) {
         this.service = professionService;
     }
 
