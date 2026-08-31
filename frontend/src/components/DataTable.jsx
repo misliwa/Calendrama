@@ -1,7 +1,6 @@
-import EmployeeRow from "./EmployeeRow.jsx";
 import {useState} from "react";
 
-function DataTable({columns, data, onAdd, onDelete, onDeleteSelected}) {
+function DataTable({columns, data, onAdd, onEdit, onDelete, onDeleteSelected}) {
 
     const [selectedRows, setselectedRows] = useState([]);
 
@@ -60,7 +59,9 @@ function DataTable({columns, data, onAdd, onDelete, onDeleteSelected}) {
                                 ))}
 
                             <td className="text-end">
-                                <button className="btn btn-primary btn-sm me-2 user-select-none">
+                                <button className="btn btn-primary btn-sm me-2 user-select-none"
+                                    onClick={() => onEdit(row)}
+                                >
                                     Edytuj
                                 </button>
 

@@ -2,44 +2,66 @@ import PageLayout from "../components/PageLayout.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
 import {useEffect, useState} from "react";
-import {addStage, deleteStage, getStages} from "../api/stages.js";
+import {addStageAPI, deleteStageAPI, getStagesAPI, stageColumns, updateStageAPI} from "../api/stages.js";
 import {useDisclosure} from "@mantine/hooks";
-import CreateStageModal from "../components/CreateStageModal.jsx";
-
-const stageColumns = [
-    {
-        name: "id",
-        getValue: stage => stage.id
-    },
-    {
-        name: "Nazwa",
-        getValue: stage => stage.name
-    },
-    {
-        name: "Opis",
-        getValue: stage => stage.description
-    },
-];
+import StageModal from "../components/StageModal.jsx";
 
 function Stages() {
     const [stages, setStages] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [editedStage, setEditedStage] = useState(null);
 
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, {open, close}] = useDisclosure(false);
 
-    const handleAdd = async (stage) => {
-       try{
-           setError(null);
-           const createdStage = await addStage(stage);
-           setStages(previousStages => [...previousStages, createdStage]);
-       }catch (error) {
-           setError(error);
-       }
+
+    const addStage = async (stage) => {
+        try {
+            setError(null);
+            const createdStage = await addStageAPI(stage);
+            setStages(previousStages => [...previousStages, createdStage]);
+        } catch (error) {
+            setError(error);
+            throw error;
+        }
 
     }
 
-    const handleDelete = async (stageId) => {
+    const updateStage = async (stageId, stage) => {
+        try {
+            setError(null);
+
+            const updatedStage = await updateStageAPI(stageId, stage);
+
+            setStages(previousStages => previousStages
+                .map(stage =>
+                    stage.id === updatedStage.id ? updatedStage : stage
+                ));
+        } catch (error) {
+            setError(error);
+            throw error;
+        }
+    }
+
+    const handleOpenAddModal = () => {
+        setEditedStage(null);
+        open();
+    };
+
+    const handleOpenEditModal = (stage) => {
+        setEditedStage(stage);
+        open();
+    };
+
+    const handleModalSubmit = async (values) => {
+        if (editedStage) {
+            await updateStage(editedStage.id, values);
+        } else {
+            await addStage(values);
+        }
+    };
+
+    const deleteStage = async (stageId) => {
         const confirmed = window.confirm(
             "Czy na pewno chcesz usunąć tę scenę?"
         );
@@ -52,7 +74,7 @@ function Stages() {
         try {
             setError(null);
 
-            await deleteStage(stageId);
+            await deleteStageAPI(stageId);
 
             setStages(previousStages =>
                 previousStages.filter(stage => stage.id !== stageId)
@@ -62,7 +84,7 @@ function Stages() {
         }
     };
 
-    const handleDeleteSelected = async (selectedStageIds) => {
+    const deleteSelectedStages = async (selectedStageIds) => {
         const confirmed = window.confirm(
             `Czy na pewno chcesz usunąć ${selectedStageIds.length} zaznaczonych scen?`
         );
@@ -75,7 +97,7 @@ function Stages() {
             setError(null);
 
             await Promise.all(
-                selectedStageIds.map(stageId => deleteStage(stageId))
+                selectedStageIds.map(stageId => deleteStageAPI(stageId))
             );
 
             setStages(previousStages =>
@@ -87,18 +109,19 @@ function Stages() {
 
     };
 
-    useEffect(() => {
-        const loadStages = async () => {
-            try {
-                const stages = await getStages();
-                setStages(stages);
-            } catch (e) {
-                setError(e);
-                console.log(e.status + " " + e.code + " " + e.message);
-            } finally {
-                setLoading(false);
-            }
+    const loadStages = async () => {
+        try {
+            const stages = await getStagesAPI();
+            setStages(stages);
+        } catch (e) {
+            setError(e);
+            console.log(e.status + " " + e.code + " " + e.message);
+        } finally {
+            setLoading(false);
         }
+    }
+
+    useEffect(() => {
         loadStages();
     }, []);
 
@@ -116,18 +139,19 @@ function Stages() {
                 <DataTable
                     columns={stageColumns}
                     data={stages}
-                    onAdd={open}
-                    onDelete={handleDelete}
-                    onDeleteSelected={handleDeleteSelected}
+                    onAdd={handleOpenAddModal}
+                    onEdit={handleOpenEditModal}
+                    onDelete={deleteStage}
+                    onDeleteSelected={deleteSelectedStages}
                 />
             )}
-            <CreateStageModal
+            <StageModal
                 opened={opened}
                 onClose={close}
-                onSubmit={handleAdd}
-            >
+                onSubmit={handleModalSubmit}
+                stageToEdit={editedStage}
+            />
 
-            </CreateStageModal>
         </PageLayout>
     );
 }

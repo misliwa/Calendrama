@@ -1,7 +1,8 @@
 import {Button, Group, Modal, TextInput} from "@mantine/core";
 import {useForm} from "@mantine/form";
+import {useEffect} from "react";
 
-function CreateStageModal({ opened, onClose, onSubmit }) {
+function StageModal({opened, onClose, onSubmit, stageToEdit}) {
     const form = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -17,6 +18,22 @@ function CreateStageModal({ opened, onClose, onSubmit }) {
         },
     });
 
+    useEffect(() => {
+        if (stageToEdit) {
+            form.setValues({
+                name: stageToEdit.name,
+                description: stageToEdit.description
+            });
+        } else {
+            form.setValues({
+                name: '',
+                description: ''
+            });
+        }
+    }, [stageToEdit]);
+
+
+
     const handleClose = () => {
         form.reset();
         onClose();
@@ -26,9 +43,12 @@ function CreateStageModal({ opened, onClose, onSubmit }) {
         <Modal
             opened={opened}
             onClose={handleClose}
-            title="Dodaj scenę"
+            title={stageToEdit ? "Edytuj scenę" : "Dodaj scenę"}
         >
-            <form onSubmit={form.onSubmit((values) => {onSubmit(values); handleClose(); })}>
+            <form onSubmit={form.onSubmit(async (values) => {
+                await onSubmit(values);
+                handleClose();
+            })}>
                 <TextInput
                     withAsterisk
                     label="Nazwa"
@@ -47,11 +67,11 @@ function CreateStageModal({ opened, onClose, onSubmit }) {
 
 
                 <Group justify="flex-end" mt="md">
-                    <Button type="submit">Dodaj</Button>
+                    <Button type="submit">Zapisz</Button>
                 </Group>
             </form>
         </Modal>
     );
 }
 
-export default CreateStageModal
+export default StageModal
