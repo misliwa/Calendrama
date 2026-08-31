@@ -1,6 +1,28 @@
 import API_BASE_URL from "./api.js";
 import {ApiError} from "./ApiError.js";
 
+export const addStage = async (stage) => {
+    const response = await fetch(`${API_BASE_URL}/stages`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(stage)
+        });
+    const body = await response.json();
+
+    if (response.status !== 201) {
+        throw new ApiError(
+            body.error?.message ?? "Wystąpił błąd API",
+            response.status,
+            body.error?.code
+        );
+    }
+
+    return body;
+}
+
 export const getStages = async () => {
     const response = await fetch(`${API_BASE_URL}/stages`);
     const body = await response.json();

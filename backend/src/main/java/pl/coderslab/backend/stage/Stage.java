@@ -2,6 +2,7 @@ package pl.coderslab.backend.stage;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -18,8 +19,9 @@ public class Stage {
     private Long id;
 
     @NotBlank
-    @Size(max = 50)
+    @Size(min = 3, max = 50)
     private String name;
 
+    @NotNull
     private String description;
 }

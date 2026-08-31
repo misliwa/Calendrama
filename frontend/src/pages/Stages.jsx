@@ -2,7 +2,9 @@ import PageLayout from "../components/PageLayout.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
 import {useEffect, useState} from "react";
-import {deleteStage, getStages} from "../api/stages.js";
+import {addStage, deleteStage, getStages} from "../api/stages.js";
+import {useDisclosure} from "@mantine/hooks";
+import CreateStageModal from "../components/CreateStageModal.jsx";
 
 const stageColumns = [
     {
@@ -24,6 +26,18 @@ function Stages() {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const [opened, { open, close }] = useDisclosure(false);
+
+    const handleAdd = async (stage) => {
+       try{
+           setError(null);
+           const createdStage = await addStage(stage);
+           setStages(previousStages => [...previousStages, createdStage]);
+       }catch (error) {
+           setError(error);
+       }
+
+    }
 
     const handleDelete = async (stageId) => {
         const confirmed = window.confirm(
@@ -87,6 +101,7 @@ function Stages() {
         }
         loadStages();
     }, []);
+
     return (
         <PageLayout title="Sceny">
             <SearchBar/>
@@ -101,11 +116,18 @@ function Stages() {
                 <DataTable
                     columns={stageColumns}
                     data={stages}
+                    onAdd={open}
                     onDelete={handleDelete}
                     onDeleteSelected={handleDeleteSelected}
                 />
             )}
+            <CreateStageModal
+                opened={opened}
+                onClose={close}
+                onSubmit={handleAdd}
+            >
 
+            </CreateStageModal>
         </PageLayout>
     );
 }

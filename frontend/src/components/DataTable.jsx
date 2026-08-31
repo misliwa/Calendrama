@@ -1,7 +1,7 @@
 import EmployeeRow from "./EmployeeRow.jsx";
 import {useState} from "react";
 
-function DataTable({columns, data, onDelete, onDeleteSelected}) {
+function DataTable({columns, data, onAdd, onDelete, onDeleteSelected}) {
 
     const [selectedRows, setselectedRows] = useState([]);
 
@@ -73,9 +73,13 @@ function DataTable({columns, data, onDelete, onDeleteSelected}) {
                     </tbody>
                 </table>
             </div>
-            <div className="d-flex justify-content-end">
+            <div className="d-flex gap-2 justify-content-end">
+                <button className="btn btn-primary btn-sm text-end" onClick={() => onAdd()}>
+                    Dodaj
+                </button>
+
                 <button className="btn btn-danger btn-sm text-end" onClick={() => onDeleteSelected(selectedRows)}>
-                    Usuń zaznaczonych
+                    Usuń zaznaczone
                 </button>
 
             </div>
