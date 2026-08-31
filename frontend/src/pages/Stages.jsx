@@ -1,129 +1,38 @@
 import PageLayout from "../components/PageLayout.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
-import {useEffect, useState} from "react";
 import * as api from "../api/stages.js";
-import {useDisclosure} from "@mantine/hooks";
 import StageModal from "../components/StageModal.jsx";
+import {useCrud} from "../hooks/useCrud.jsx";
+import {useCrudModal} from "../hooks/useCrudModal.jsx";
 
 function Stages() {
-    const [stages, setStages] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [editedStage, setEditedStage] = useState(null);
+    const {
+        items: stages,
+        error,
+        loading,
+        createItem,
+        updateItem,
+        deleteItem,
+        deleteSelectedItems
+    } = useCrud(api);
 
-    const [opened, {open, close}] = useDisclosure(false);
-
-
-    const addStage = async (stage) => {
-        try {
-            setError(null);
-            const createdStage = await api.create(stage);
-            setStages(previousStages => [...previousStages, createdStage]);
-        } catch (error) {
-            setError(error);
-            throw error;
-        }
-
-    }
-
-    const updateStage = async (stageId, stage) => {
-        try {
-            setError(null);
-
-            const updatedStage = await api.updateById(stageId, stage);
-
-            setStages(previousStages => previousStages
-                .map(stage =>
-                    stage.id === updatedStage.id ? updatedStage : stage
-                ));
-        } catch (error) {
-            setError(error);
-            throw error;
-        }
-    }
-
-    const handleOpenAddModal = () => {
-        setEditedStage(null);
-        open();
-    };
-
-    const handleOpenEditModal = (stage) => {
-        setEditedStage(stage);
-        open();
-    };
+    const {
+        opened,
+        editedItem: editedStage,
+        openCreateModal,
+        openEditModal,
+        closeModal
+    } = useCrudModal();
 
     const handleModalSubmit = async (values) => {
         if (editedStage) {
-            await updateStage(editedStage.id, values);
+            await updateItem(editedStage.id, values);
         } else {
-            await addStage(values);
+            await createItem(values);
         }
     };
 
-    const deleteStage = async (stageId) => {
-        const confirmed = window.confirm(
-            "Czy na pewno chcesz usunąć ten obiekt?"
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        try {
-            setError(null);
-
-            await api.deleteById(stageId);
-
-            setStages(previousStages =>
-                previousStages.filter(stage => stage.id !== stageId)
-            );
-        } catch (error) {
-            setError(error);
-        }
-    };
-
-    const deleteSelectedStages = async (selectedStageIds) => {
-        const confirmed = window.confirm(
-            `Czy na pewno chcesz usunąć ${selectedIds.length} zaznaczonych obiektów?`
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            setError(null);
-
-            await Promise.all(
-                selectedStageIds.map(stageId => api.deleteById(stageId))
-            );
-
-            setStages(previousStages =>
-                previousStages.filter(stage => !selectedStageIds.includes(stage.id))
-            );
-        } catch (error) {
-            setError(error);
-        }
-
-    };
-
-    const loadStages = async () => {
-        try {
-            const stages = await api.findAll();
-            setStages(stages);
-        } catch (e) {
-            setError(e);
-            console.log(e.status + " " + e.code + " " + e.message);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        loadStages();
-    }, []);
 
     return (
         <PageLayout title="Sceny">
@@ -139,15 +48,15 @@ function Stages() {
                 <DataTable
                     columns={api.columns}
                     data={stages}
-                    onAdd={handleOpenAddModal}
-                    onEdit={handleOpenEditModal}
-                    onDelete={deleteStage}
-                    onDeleteSelected={deleteSelectedStages}
+                    onAdd={openCreateModal}
+                    onEdit={openEditModal}
+                    onDelete={deleteItem}
+                    onDeleteSelected={deleteSelectedItems}
                 />
             )}
             <StageModal
                 opened={opened}
-                onClose={close}
+                onClose={closeModal}
                 onSubmit={handleModalSubmit}
                 stageToEdit={editedStage}
             />
