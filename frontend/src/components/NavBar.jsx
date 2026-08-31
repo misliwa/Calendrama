@@ -7,6 +7,7 @@ function NavBar({ collapsed, onToggle }){
         { path: "/", label: "Kalendarz", icon: "📅"},
         { path: "/plays", label: "Spektakle", icon: "🎭"},
         { path: "/employees", label: "Pracownicy", icon: "👤" },
+        { path: "/professions", label: "Zawody", icon: "💼" },
         { path: "/stages", label: "Sceny", icon: "🎪" },
         { path: "/settings", label: "Ustawienia", icon: "⚙️" }
     ];

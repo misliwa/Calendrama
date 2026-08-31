@@ -1,31 +1,27 @@
 import API_BASE_URL from "./api.js";
 import {ApiError} from "./ApiError.js";
 
-const RESOURCE_API_URL = `${API_BASE_URL}/stages`;
+const RESOURCE_API_URL = `${API_BASE_URL}/professions`;
 
 export const columns = [
     {
         name: "id",
-        getValue: stage => stage.id
+        getValue: profession => profession.id
     },
     {
         name: "Nazwa",
-        getValue: stage => stage.name
-    },
-    {
-        name: "Opis",
-        getValue: stage => stage.description
-    },
+        getValue: profession => profession.name
+    }
 ];
 
-export const create = async (stage) => {
+export const create = async (profession) => {
     const response = await fetch(`${RESOURCE_API_URL}`,
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(stage)
+            body: JSON.stringify(profession)
         });
     const body = await response.json();
 
@@ -40,14 +36,14 @@ export const create = async (stage) => {
     return body;
 }
 
-export const updateById = async (id, stage) => {
+export const updateById = async (id, profession) => {
     const response = await fetch(`${RESOURCE_API_URL}/${id}`,
         {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(stage)
+            body: JSON.stringify(profession)
         });
     const body = await response.json();
 

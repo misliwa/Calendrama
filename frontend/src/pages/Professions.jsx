@@ -2,24 +2,25 @@ import PageLayout from "../components/PageLayout.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
 import {useEffect, useState} from "react";
-import * as api from "../api/stages.js";
+import * as api from "../api/professions.js";
 import {useDisclosure} from "@mantine/hooks";
-import StageModal from "../components/StageModal.jsx";
+import ProfessionModal from "../components/ProfessionModal.jsx";
+import {create} from "../api/professions.js";
 
-function Stages() {
-    const [stages, setStages] = useState([]);
+function Professions() {
+    const [professions, setProfessions] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [editedStage, setEditedStage] = useState(null);
+    const [editedProfession, setEditedProfession] = useState(null);
 
     const [opened, {open, close}] = useDisclosure(false);
 
 
-    const addStage = async (stage) => {
+    const addProfession = async (profession) => {
         try {
             setError(null);
-            const createdStage = await api.create(stage);
-            setStages(previousStages => [...previousStages, createdStage]);
+            const createdProfession = await api.create(profession);
+            setProfessions(previousStages => [...previousStages, createdProfession]);
         } catch (error) {
             setError(error);
             throw error;
@@ -27,15 +28,15 @@ function Stages() {
 
     }
 
-    const updateStage = async (stageId, stage) => {
+    const updateProfession = async (professionId, profession) => {
         try {
             setError(null);
 
-            const updatedStage = await api.updateById(stageId, stage);
+            const updatedProfession = await api.updateById(professionId, profession);
 
-            setStages(previousStages => previousStages
-                .map(stage =>
-                    stage.id === updatedStage.id ? updatedStage : stage
+            setProfessions(previousStages => previousStages
+                .map(profession =>
+                    profession.id === updatedProfession.id ? updatedProfession : profession
                 ));
         } catch (error) {
             setError(error);
@@ -44,24 +45,24 @@ function Stages() {
     }
 
     const handleOpenAddModal = () => {
-        setEditedStage(null);
+        setEditedProfession(null);
         open();
     };
 
     const handleOpenEditModal = (stage) => {
-        setEditedStage(stage);
+        setEditedProfession(stage);
         open();
     };
 
     const handleModalSubmit = async (values) => {
-        if (editedStage) {
-            await updateStage(editedStage.id, values);
+        if (editedProfession) {
+            await updateProfession(editedProfession.id, values);
         } else {
-            await addStage(values);
+            await addProfession(values);
         }
     };
 
-    const deleteStage = async (stageId) => {
+    const deleteProfession = async (professionId) => {
         const confirmed = window.confirm(
             "Czy na pewno chcesz usunąć ten obiekt?"
         );
@@ -74,17 +75,17 @@ function Stages() {
         try {
             setError(null);
 
-            await api.deleteById(stageId);
+            await api.deleteById(professionId);
 
-            setStages(previousStages =>
-                previousStages.filter(stage => stage.id !== stageId)
+            setProfessions(previousStages =>
+                previousStages.filter(stage => stage.id !== professionId)
             );
         } catch (error) {
             setError(error);
         }
     };
 
-    const deleteSelectedStages = async (selectedStageIds) => {
+    const deleteSelected = async (selectedIds) => {
         const confirmed = window.confirm(
             `Czy na pewno chcesz usunąć ${selectedIds.length} zaznaczonych obiektów?`
         );
@@ -97,11 +98,11 @@ function Stages() {
             setError(null);
 
             await Promise.all(
-                selectedStageIds.map(stageId => api.deleteById(stageId))
+                selectedIds.map(id => api.deleteById(id))
             );
 
-            setStages(previousStages =>
-                previousStages.filter(stage => !selectedStageIds.includes(stage.id))
+            setProfessions(previous =>
+                previous.filter(profession => !selectedIds.includes(profession.id))
             );
         } catch (error) {
             setError(error);
@@ -109,10 +110,10 @@ function Stages() {
 
     };
 
-    const loadStages = async () => {
+    const loadProfessions = async () => {
         try {
-            const stages = await api.findAll();
-            setStages(stages);
+            const professions = await api.findAll();
+            setProfessions(professions);
         } catch (e) {
             setError(e);
             console.log(e.status + " " + e.code + " " + e.message);
@@ -122,11 +123,11 @@ function Stages() {
     }
 
     useEffect(() => {
-        loadStages();
+        loadProfessions();
     }, []);
 
     return (
-        <PageLayout title="Sceny">
+        <PageLayout title="Zawody">
             <SearchBar/>
             {error &&
                 <div className="alert alert-danger">
@@ -138,22 +139,22 @@ function Stages() {
             ) : (
                 <DataTable
                     columns={api.columns}
-                    data={stages}
+                    data={professions}
                     onAdd={handleOpenAddModal}
                     onEdit={handleOpenEditModal}
-                    onDelete={deleteStage}
-                    onDeleteSelected={deleteSelectedStages}
+                    onDelete={deleteProfession}
+                    onDeleteSelected={deleteSelected}
                 />
             )}
-            <StageModal
+            <ProfessionModal
                 opened={opened}
                 onClose={close}
                 onSubmit={handleModalSubmit}
-                stageToEdit={editedStage}
+                professionToEdit={editedProfession}
             />
 
         </PageLayout>
     );
 }
 
-export default Stages;
+export default Professions;

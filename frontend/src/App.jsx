@@ -6,6 +6,7 @@ import Plays from "./pages/Plays.jsx";
 import Settings from "./pages/Settings.jsx";
 import Stages from "./pages/Stages.jsx";
 import AppLayout from "./pages/AppLayout.jsx";
+import Professions from "./pages/Professions.jsx";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/plays" element={<Plays />} />
                   <Route path="/employees" element={<Employees />} />
+                  <Route path="/professions" element={<Professions run dev />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/stages" element={<Stages />} />
               </Route>
