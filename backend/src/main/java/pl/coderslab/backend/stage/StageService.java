@@ -3,6 +3,7 @@ package pl.coderslab.backend.stage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
+import pl.coderslab.backend.profession.Profession;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import java.util.Optional;
 @Service
 public class StageService {
     private final StageRepository repository;
+    private final String RESOURCE_NAME = Stage.class.getSimpleName();
 
     public List<StageDTO> findAll() {
         return repository.findAll()
@@ -29,7 +31,7 @@ public class StageService {
 
     public StageDTO findById(Long id) {
         Stage stage = repository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(Stage.class.getSimpleName(), id)
+                new ResourceNotFoundException(RESOURCE_NAME, id)
         );
 
         return StageMapper.toDTO(stage);
@@ -37,7 +39,7 @@ public class StageService {
 
     public StageDTO updateById(Long id, StageDTO stageDTO) {
         Stage stage = repository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(Stage.class.getSimpleName(), id)
+                new ResourceNotFoundException(RESOURCE_NAME, id)
         );
 
         stage.setName(stageDTO.name());
@@ -50,7 +52,7 @@ public class StageService {
     public void deleteById(Long id) {
         Stage stage = repository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException(Stage.class.getSimpleName(), id)
+                        new ResourceNotFoundException(RESOURCE_NAME, id)
                 );
 
         repository.delete(stage);
