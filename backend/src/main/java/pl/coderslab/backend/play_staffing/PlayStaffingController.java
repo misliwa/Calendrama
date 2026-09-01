@@ -1,8 +1,6 @@
 package pl.coderslab.backend.play_staffing;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +13,7 @@ public class PlayStaffingController {
     private final PlayStaffingService staffingService;
 
     @GetMapping("")
-    public ResponseEntity<List<PlayStaffingResponseDTO>> findAllByPlayId(@PathVariable("playId") Long playId){
+    public ResponseEntity<List<PlayStaffingDTO>> findAllByPlayId(@PathVariable("playId") Long playId){
         return ResponseEntity.ok(staffingService.findAllByPlayId(playId));
     }
 }

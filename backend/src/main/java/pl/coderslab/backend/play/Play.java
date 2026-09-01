@@ -11,6 +11,7 @@ import pl.coderslab.backend.stage.Stage;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -48,5 +49,18 @@ public class Play {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<PlayStaffing> playStaffings;
+    @Builder.Default
+    private List<PlayStaffing> playStaffings = new ArrayList<>();
+
+    public void addPlayStaffing(PlayStaffing playStaffing){
+        this.playStaffings.add(playStaffing);
+        playStaffing.setPlay(this);
+    }
+
+    public void removePlayStaffing(
+            PlayStaffing playStaffing
+    ) {
+        playStaffings.remove(playStaffing);
+        playStaffing.setPlay(null);
+    }
 }

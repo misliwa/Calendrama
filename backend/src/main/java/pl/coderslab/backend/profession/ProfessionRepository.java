@@ -2,6 +2,8 @@ package pl.coderslab.backend.profession;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface ProfessionRepository extends JpaRepository<Profession, Long> {
-    boolean existsByNameIgnoreCase(String name);
+    Optional<Profession> findByNameIgnoreCase(String name);
 }

@@ -55,4 +55,21 @@ public class ProfessionService {
 
         repository.delete(profession);
     }
+
+    public Profession getOrCreate(ProfessionDTO professionDTO){
+        if(professionDTO.id() != null){
+            return repository.findById(professionDTO.id()).orElseThrow(() ->
+                    new ResourceNotFoundException(RESOURCE_NAME, professionDTO.id())
+            );
+        }else{
+            String name = professionDTO.name().trim();
+
+            return repository.findByNameIgnoreCase(name)
+                    .orElseGet(() ->
+                       repository.save(Profession.builder()
+                               .name(name)
+                               .build())
+                    );
+        }
+    }
 }

@@ -19,10 +19,10 @@ public class PlayController {
         return ResponseEntity.ok(service.findAll());
     }
 
-    @PostMapping("")
-    public ResponseEntity<PlayResponseDTO> create(@Valid @RequestBody PlayRequestDTO playDTO){
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(playDTO));
-    }
+//    @PostMapping("")
+//    public ResponseEntity<PlayResponseDTO> create(@Valid @RequestBody PlayRequestDTO playDTO){
+//        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(playDTO));
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<PlayResponseDTO> findById(@PathVariable("id") Long id){
@@ -39,4 +39,10 @@ public class PlayController {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("")
+    public ResponseEntity<PlayDetailsDTO> createDetailed(@Valid @RequestBody PlayDetailsDTO playDetailsDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createDetailed(playDetailsDTO));
+    }
+
 }

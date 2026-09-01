@@ -12,12 +12,15 @@ import {useParams} from "react-router-dom";
 import StaffingAccordion from "../components/StaffingAccordion.jsx";
 import StaffingModal from "../components/StaffingModal.jsx";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
+import {useNavigate} from "react-router-dom";
 
 function PlayEdit() {
     const {id: editedPlayId} = useParams();
     const isEditMode = !!editedPlayId;
     const [editedPlay, setEditedPlay] = useState(null);
     const [staffingData, setStaffingData] = useState([]);
+
+    const navigate = useNavigate();
 
     const {
         createItem,
@@ -131,7 +134,9 @@ function PlayEdit() {
                 //await updateItem(editedPlayId, payload);
                 console.log(payload);
             } else {
-                //await createItem(payload);
+                console.log(payload);
+                await createItem(payload);
+                navigate(`/plays`);
             }
         } catch (error) {
             console.error('Nie udało się zapisać spektaklu:', error);

@@ -11,7 +11,7 @@ import java.util.List;
 public class PlayStaffingService {
     private final PlayStaffingRepository playStaffingRepository;
 
-    public List<PlayStaffingResponseDTO> findAllByPlayId(Long id) {
+    public List<PlayStaffingDTO> findAllByPlayId(Long id) {
         return playStaffingRepository.findAllByPlay_Id(id)
                 .stream()
                 .map(PlayStaffingMapper::toDTO)

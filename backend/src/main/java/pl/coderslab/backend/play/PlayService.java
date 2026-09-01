@@ -2,7 +2,13 @@ package pl.coderslab.backend.play;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
+import pl.coderslab.backend.play_staffing.PlayStaffing;
+import pl.coderslab.backend.play_staffing.PlayStaffingDTO;
+import pl.coderslab.backend.play_staffing.PlayStaffingMapper;
+import pl.coderslab.backend.profession.Profession;
+import pl.coderslab.backend.profession.ProfessionService;
 import pl.coderslab.backend.stage.Stage;
 import pl.coderslab.backend.stage.StageRepository;
 
@@ -13,7 +19,8 @@ import java.util.List;
 public class PlayService {
     private final PlayRepository playRepository;
     private final StageRepository stageRepository;
-    private final String RESOURCE_NAME = Play.class.getSimpleName();
+    private static final String RESOURCE_NAME = Play.class.getSimpleName();
+    private final ProfessionService professionService;
 
 
     public List<PlayResponseDTO> findAll() {
@@ -31,6 +38,39 @@ public class PlayService {
         play = playRepository.save(play);
 
         return PlayMapper.toDTO(play);
+    }
+
+    @Transactional
+    public PlayDetailsDTO createDetailed(PlayDetailsDTO playDetailsDTO) {
+        Stage stage = getStage(playDetailsDTO.stageId());
+        Play play = PlayMapper.detailedToEntity(playDetailsDTO, stage);
+
+
+        if(playDetailsDTO.staffings() != null) {
+            for (PlayStaffingDTO playStaffing
+                    : playDetailsDTO.staffings()) {
+
+                addStaffingToPlay(play, playStaffing);
+            }
+        }
+
+        play = playRepository.save(play);
+
+        return PlayMapper.toDetailedDTO(play);
+    }
+
+    @Transactional
+    public PlayDetailsDTO updateDetailedById(Long id, PlayDetailsDTO playDetailsDTO) {
+        Play play = playRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(RESOURCE_NAME, id)
+        );
+
+        Stage updatedStage = getStage(playDetailsDTO.stageId());
+
+        PlayMapper.updateEntity(play, playDetailsDTO, updatedStage);
+
+        Play savedPlay = playRepository.save(play);
+        return PlayMapper.toDetailedDTO(savedPlay);
     }
 
     public PlayResponseDTO findById(Long id) {
@@ -70,4 +110,13 @@ public class PlayService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Stage", id));
     }
+
+    private void addStaffingToPlay(Play play, PlayStaffingDTO playStaffingDTO){
+        Profession profession = professionService.getOrCreate(playStaffingDTO.profession());
+
+        PlayStaffing playStaffing = PlayStaffingMapper.toEntity(playStaffingDTO, profession);
+
+        play.addPlayStaffing(playStaffing);
+    }
+
 }

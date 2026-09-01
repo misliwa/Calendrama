@@ -19,7 +19,6 @@ public class Profession {
     private Long id;
 
     @NotBlank
-    @UniqueElements
     @Column(nullable = false, unique = true)
     private String name;
 }

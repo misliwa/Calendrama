@@ -2,14 +2,16 @@ package pl.coderslab.backend.play_staffing;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import pl.coderslab.backend.play.Play;
 import pl.coderslab.backend.profession.Profession;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PlayStaffing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
