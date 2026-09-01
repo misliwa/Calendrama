@@ -6,10 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import pl.coderslab.backend.play_staffing.PlayStaffing;
 import pl.coderslab.backend.stage.Stage;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,9 +37,16 @@ public class Play {
     @ManyToOne
     @NotNull
     @JoinColumn(name = "stage_id", nullable = false)
-    Stage stage;
+   private Stage stage;
 
     @NotNull
     @Min(1)
-    Integer durationInMinutes;
+    private Integer durationInMinutes;
+
+    @OneToMany(
+            mappedBy = "play",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<PlayStaffing> playStaffings;
 }
