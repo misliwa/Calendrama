@@ -45,17 +45,18 @@ function PlayEdit() {
         const existingProfession = professions.find(
             profession =>
                 profession.name.trim().toLowerCase() ===
-                values.profession.trim().toLowerCase()
+                values.professionName.trim().toLowerCase()
         );
 
         const staffingValues = {
-            ...values,
+            roleName: values.roleName,
 
-            professionId: existingProfession?.id ?? null,
-
-            profession:
-                existingProfession?.name ??
-                values.profession
+            profession: {
+                id: existingProfession?.id ?? null,
+                name:
+                    existingProfession?.name ??
+                    values.professionName
+            }
         };
 
         if (editedStaffing) {

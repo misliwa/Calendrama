@@ -9,7 +9,7 @@ export const staffingColumns = [
     },
     {
         name: "Zawód",
-        getValue: staffing => staffing.profession
+        getValue: staffing => staffing.professionName
     },
     {
         name: "Nazwa roli",

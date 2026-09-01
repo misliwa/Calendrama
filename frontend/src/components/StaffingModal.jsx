@@ -6,12 +6,12 @@ function StaffingModal({opened, onClose, onSubmit, staffingToEdit, professions})
     const form = useForm({
         mode: 'uncontrolled',
         initialValues: {
-            profession: '',
+            professionName: '',
             roleName: ''
         },
 
         validate: {
-            profession: (value) =>
+            professionName: (value) =>
                 value.trim().length < 2
                     ? "Nazwa musi mieć co najmniej 2 znaki"
                     : null,
@@ -21,12 +21,12 @@ function StaffingModal({opened, onClose, onSubmit, staffingToEdit, professions})
     useEffect(() => {
         if (staffingToEdit) {
             form.setValues({
-                profession: staffingToEdit.profession,
+                professionName: staffingToEdit.profession.name,
                 roleName: staffingToEdit.roleName
             });
         } else {
             form.setValues({
-                profession: '',
+                professionName: '',
                 roleName: ''
             });
         }
@@ -55,8 +55,8 @@ function StaffingModal({opened, onClose, onSubmit, staffingToEdit, professions})
                     data={professions.map(profession => (
                         profession.name
                     ))}
-                    key={form.key('profession')}
-                    {...form.getInputProps('profession')}
+                    key={form.key('professionName')}
+                    {...form.getInputProps('professionName')}
                 />
 
                 <TextInput

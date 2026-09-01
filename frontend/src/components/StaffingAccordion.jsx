@@ -10,8 +10,8 @@ function StaffingAccordion({staffingData, onEdit, onDelete}){
                 <Accordion variant="separated" radius="md">
                     {staffingData.map((staffing) => {
                         const staffingName = staffing.roleName
-                            ? `${staffing.profession} - ${staffing.roleName}`
-                            : staffing.profession;
+                            ? `${staffing.profession.name} - ${staffing.roleName}`
+                            : staffing.profession.name;
 
                         return (
                             <Accordion.Item

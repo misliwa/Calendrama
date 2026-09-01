@@ -15,7 +15,7 @@ function EmployeeRow({employee, checked, onChange}) {
                 {employee.name}
             </td>
             <td>
-                {employee.profession}
+                {employee.professionName}
             </td>
             <td>
                 {employee.contractType}

@@ -1,8 +1,10 @@
 package pl.coderslab.backend.play_staffing;
 
+import pl.coderslab.backend.profession.ProfessionDTO;
+
 public record PlayStaffingResponseDTO(
         Long id,
-        String profession,
+        ProfessionDTO profession,
         String roleName
 ) {
 }
