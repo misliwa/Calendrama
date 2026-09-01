@@ -41,17 +41,35 @@ function PlayEdit() {
         closeModal
     } = useCrudModal();
 
-    const handleModalSubmit = async (values) => {
+    const handleModalSubmit = (values) => {
+        const existingProfession = professions.find(
+            profession =>
+                profession.name.trim().toLowerCase() ===
+                values.profession.trim().toLowerCase()
+        );
+
+        const staffingValues = {
+            ...values,
+
+            professionId: existingProfession?.id ?? null,
+
+            profession:
+                existingProfession?.name ??
+                values.profession
+        };
+
         if (editedStaffing) {
             setStaffingData(previous => previous
                 .map(staffing =>
-                    staffing.clientId === editedStaffing.clientId ? {...staffing, ...values} : staffing
+                    staffing.clientId === editedStaffing.clientId ?
+                        {...staffing, ...staffingValues}
+                        : staffing
                 ))
         } else {
             setStaffingData(prev => [
                 ...prev,
                 {
-                    ...values,
+                    ...staffingValues,
                     id: null,
                     clientId: crypto.randomUUID()
                 }
@@ -102,13 +120,17 @@ function PlayEdit() {
             ...values,
             durationInMinutes: Number(values.durationInMinutes),
             stageId: Number(values.stageId),
+            staffings: staffingData.map(
+                ({ clientId, ...staffing }) => staffing
+            )
         };
 
         try {
             if (isEditMode) {
-                await updateItem(editedPlayId, payload);
+                //await updateItem(editedPlayId, payload);
+                console.log(payload);
             } else {
-                await createItem(payload);
+                //await createItem(payload);
             }
         } catch (error) {
             console.error('Nie udało się zapisać spektaklu:', error);
@@ -228,22 +250,21 @@ function PlayEdit() {
                     onEdit={openEditModal}
                     onDelete={handleDeleteStaffing}
                 />
-                <StaffingModal
-                    opened={opened}
-                    onClose={closeModal}
-                    onSubmit={handleModalSubmit}
-                    staffingToEdit={editedStaffing}
-                    professions={professions}
-                >
-
-                </StaffingModal>
 
                 <Group justify="flex-end" mt="md">
                     <Button type="submit">Zapisz</Button>
                 </Group>
             </form>
 
+            <StaffingModal
+                opened={opened}
+                onClose={closeModal}
+                onSubmit={handleModalSubmit}
+                staffingToEdit={editedStaffing}
+                professions={professions}
+            >
 
+            </StaffingModal>
         </PageLayout>
     );
 
