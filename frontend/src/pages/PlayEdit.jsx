@@ -2,17 +2,20 @@ import PageLayout from "../components/PageLayout.jsx";
 import {useFocusReturn} from "@mantine/hooks";
 import {useForm} from "@mantine/form";
 import {useEffect, useState} from "react";
-import {Button, Group, NumberInput, Select, Table, TextInput, Text} from "@mantine/core";
+import {Button, Group, NumberInput, Select, Table, TextInput, Text, Accordion} from "@mantine/core";
 import {DatePickerInput} from "@mantine/dates";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {playsApi, playColumns} from "../api/plays.js";
 import {stagesApi} from "../api/stages.js";
+import {playStaffingsApi, staffingColumns} from "../api/playStaffing.js";
 import {useParams} from "react-router-dom";
+import StaffingAccordion from "../components/StaffingAccordion.jsx";
 
 function PlayEdit() {
-    const { id: editedPlayId } = useParams();
+    const {id: editedPlayId} = useParams();
     const isEditMode = !!editedPlayId;
     const [editedPlay, setEditedPlay] = useState(null);
+    const [staffingData, setStaffingData] = useState([]);
 
     const {
         items: plays,
@@ -25,6 +28,7 @@ function PlayEdit() {
         items: stages
     } = useCrud(stagesApi);
 
+
     useEffect(() => {
         if (!editedPlayId) {
             return;
@@ -34,7 +38,14 @@ function PlayEdit() {
             setEditedPlay(play);
         };
 
-        loadPlay();
+
+        const loadStaffings = async () => {
+            const staffings = await playStaffingsApi.findAllById(editedPlayId);
+            setStaffingData(staffings);
+        };
+
+        loadPlay()
+        loadStaffings();
 
     }, [editedPlayId]);
 
@@ -113,20 +124,6 @@ function PlayEdit() {
         }
     }, [editedPlay]);
 
-    const staffingData = [
-        { id: 6, profession: "Actor", roleName: 'Hamlet'},
-        { id: 7, profession: "Muzyk", roleName: '-'},
-        { id: 8, profession: "Actor", roleName: 'Ofelia'},
-        { id: 9, profession: "Inspicjent", roleName: '-'},
-    ];
-
-    const staffingRows = staffingData.map((element) => (
-        <Table.Tr key={element.id}>
-            <Table.Td>{element.id}</Table.Td>
-            <Table.Td>{element.profession}</Table.Td>
-            <Table.Td>{element.roleName}</Table.Td>
-        </Table.Tr>
-    ));
 
     return (
         <PageLayout title={"Szczegóły spektaklu"}>
@@ -140,6 +137,7 @@ function PlayEdit() {
                 />
 
                 <TextInput
+                    mt="sm"
                     withAsterisk
                     label="Opis"
                     placeholder="Opis spektaklu"
@@ -148,6 +146,7 @@ function PlayEdit() {
                 />
 
                 <DatePickerInput
+                    mt="sm"
                     withAsterisk
                     label="Data Premiery"
                     placeholder="Wybierz datę"
@@ -156,6 +155,7 @@ function PlayEdit() {
                 />
 
                 <NumberInput
+                    mt="sm"
                     label="Czas trwania spektaklu"
                     placeholder="Czas trwania spektaklu (m)"
                     min={1}
@@ -166,6 +166,7 @@ function PlayEdit() {
                 />
 
                 <Select
+                    mt="sm"
                     withAsterisk
                     label="Scena"
                     placeholder="Wybierz scenę"
@@ -180,19 +181,11 @@ function PlayEdit() {
                 </Group>
             </form>
 
-            <Text size="lg">Role i zadania</Text>
-            <Table striped highlightOnHover stickyHeader stickyHeaderOffset={60}>
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th>id</Table.Th>
-                        <Table.Th>Zawód</Table.Th>
-                        <Table.Th>Nazwa roli</Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>{staffingRows}</Table.Tbody>
-            </Table>
-
-
+            <Group>
+                <Text size="lg">Role i zadania</Text>
+                <Button>Dodaj</Button>
+            </Group>
+            <StaffingAccordion staffingData={staffingData} />
         </PageLayout>
     );
 
