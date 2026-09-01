@@ -5,7 +5,7 @@ function PageLayout({ title, children }) {
                 <h5 className="mb-0">{title}</h5>
             </div>
 
-            <div className="d-flex flex-column flex-grow-1 rounded bg-primary-subtle p-3 gap-3 shadow-sm"
+            <div className="d-flex flex-column flex-grow-1 rounded bg-primary-subtle p-3 gap-3 shadow-sm overflow-auto"
                 style={{minHeight: 0}}
             >
                 {children}

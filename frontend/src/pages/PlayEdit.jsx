@@ -1,15 +1,17 @@
 import PageLayout from "../components/PageLayout.jsx";
-import {useFocusReturn} from "@mantine/hooks";
 import {useForm} from "@mantine/form";
 import {useEffect, useState} from "react";
-import {Button, Group, NumberInput, Select, Table, TextInput, Text, Accordion} from "@mantine/core";
+import {Button, Group, NumberInput, Select, TextInput, Text} from "@mantine/core";
 import {DatePickerInput} from "@mantine/dates";
 import {useCrud} from "../hooks/useCrud.jsx";
-import {playsApi, playColumns} from "../api/plays.js";
+import {playsApi} from "../api/plays.js";
 import {stagesApi} from "../api/stages.js";
-import {playStaffingsApi, staffingColumns} from "../api/playStaffing.js";
+import {professionsApi} from "../api/professions.js";
+import {playStaffingsApi} from "../api/playStaffing.js";
 import {useParams} from "react-router-dom";
 import StaffingAccordion from "../components/StaffingAccordion.jsx";
+import StaffingModal from "../components/StaffingModal.jsx";
+import {useCrudModal} from "../hooks/useCrudModal.jsx";
 
 function PlayEdit() {
     const {id: editedPlayId} = useParams();
@@ -18,7 +20,6 @@ function PlayEdit() {
     const [staffingData, setStaffingData] = useState([]);
 
     const {
-        items: plays,
         createItem,
         updateItem,
         getItemById: getPlayById
@@ -27,6 +28,36 @@ function PlayEdit() {
     const {
         items: stages
     } = useCrud(stagesApi);
+
+    const {
+        items: professions
+    } = useCrud(professionsApi);
+
+    const {
+        opened,
+        editedItem: editedStaffing,
+        openCreateModal,
+        openEditModal,
+        closeModal
+    } = useCrudModal();
+
+    const handleModalSubmit = async (values) => {
+        if (editedStaffing) {
+            setStaffingData(previous => previous
+                .map(staffing =>
+                    staffing.clientId === editedStaffing.clientId ? {...staffing, ...values} : staffing
+                ))
+        } else {
+            setStaffingData(prev => [
+                ...prev,
+                {
+                    ...values,
+                    id: null,
+                    clientId: crypto.randomUUID()
+                }
+            ]);
+        }
+    };
 
 
     useEffect(() => {
@@ -38,10 +69,14 @@ function PlayEdit() {
             setEditedPlay(play);
         };
 
-
         const loadStaffings = async () => {
             const staffings = await playStaffingsApi.findAllById(editedPlayId);
-            setStaffingData(staffings);
+            setStaffingData(
+                staffings.map(staffing => ({
+                    ...staffing,
+                    clientId: crypto.randomUUID()
+                }))
+            );
         };
 
         loadPlay()
@@ -183,9 +218,21 @@ function PlayEdit() {
 
             <Group>
                 <Text size="lg">Role i zadania</Text>
-                <Button>Dodaj</Button>
+                <Button onClick={openCreateModal}>Dodaj</Button>
             </Group>
-            <StaffingAccordion staffingData={staffingData} />
+            <StaffingAccordion
+                staffingData={staffingData}
+                onEdit={openEditModal}
+            />
+            <StaffingModal
+            opened={opened}
+            onClose={closeModal}
+            onSubmit={handleModalSubmit}
+            staffingToEdit={editedStaffing}
+            professions={professions}
+            >
+
+            </StaffingModal>
         </PageLayout>
     );
 

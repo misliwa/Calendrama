@@ -1,6 +1,6 @@
 import {Accordion, Button, Group, Text} from "@mantine/core";
 
-function StaffingAccordion({staffingData}){
+function StaffingAccordion({staffingData, onEdit}){
     return(
         staffingData.length === 0 ? (
                 <Text c="dimmed">
@@ -15,8 +15,8 @@ function StaffingAccordion({staffingData}){
 
                         return (
                             <Accordion.Item
-                                key={staffing.id}
-                                value={staffing.id.toString()}
+                                key={staffing.clientId}
+                                value={staffing.clientId}
                             >
                                 <Accordion.Control icon="👤">
                                     {staffingName}
@@ -32,7 +32,7 @@ function StaffingAccordion({staffingData}){
                                             Dodaj pracownika
                                         </Button>
 
-                                        <Button variant="default">
+                                        <Button variant="default" onClick={() => onEdit(staffing)}>
                                             Edytuj rolę
                                         </Button>
 

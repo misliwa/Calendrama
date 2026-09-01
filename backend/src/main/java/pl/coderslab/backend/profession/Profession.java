@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
 
 @Getter
 @Setter
@@ -18,6 +19,7 @@ public class Profession {
     private Long id;
 
     @NotBlank
-    @Size(min = 2, max = 30)
+    @UniqueElements
+    @Column(nullable = false, unique = true)
     private String name;
 }
