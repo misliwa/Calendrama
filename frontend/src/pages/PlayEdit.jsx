@@ -89,6 +89,14 @@ function PlayEdit() {
         label: stage.name,
     }));
 
+    const handleDeleteStaffing = (staffingToDelete) =>
+        setStaffingData(prev =>
+            prev.filter(
+                staffing =>
+                    staffing.clientId !== staffingToDelete.clientId
+            )
+        );
+
     const handleSubmit = async (values) => {
         const payload = {
             ...values,
@@ -211,28 +219,31 @@ function PlayEdit() {
                 />
 
 
+                <Group mt="md" mb="sm">
+                    <Text size="lg">Role i zadania</Text>
+                    <Button type="button" onClick={openCreateModal}>Dodaj</Button>
+                </Group>
+                <StaffingAccordion
+                    staffingData={staffingData}
+                    onEdit={openEditModal}
+                    onDelete={handleDeleteStaffing}
+                />
+                <StaffingModal
+                    opened={opened}
+                    onClose={closeModal}
+                    onSubmit={handleModalSubmit}
+                    staffingToEdit={editedStaffing}
+                    professions={professions}
+                >
+
+                </StaffingModal>
+
                 <Group justify="flex-end" mt="md">
                     <Button type="submit">Zapisz</Button>
                 </Group>
             </form>
 
-            <Group>
-                <Text size="lg">Role i zadania</Text>
-                <Button onClick={openCreateModal}>Dodaj</Button>
-            </Group>
-            <StaffingAccordion
-                staffingData={staffingData}
-                onEdit={openEditModal}
-            />
-            <StaffingModal
-            opened={opened}
-            onClose={closeModal}
-            onSubmit={handleModalSubmit}
-            staffingToEdit={editedStaffing}
-            professions={professions}
-            >
 
-            </StaffingModal>
         </PageLayout>
     );
 
