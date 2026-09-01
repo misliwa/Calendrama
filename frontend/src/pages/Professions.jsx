@@ -1,7 +1,7 @@
 import PageLayout from "../components/PageLayout.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
-import * as api from "../api/professions.js";
+import {professionsApi, professionColumns} from "../api/professions.js";
 import ProfessionModal from "../components/ProfessionModal.jsx";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
@@ -15,7 +15,7 @@ function Professions() {
         updateItem,
         deleteItem,
         deleteSelectedItems
-    } = useCrud(api);
+    } = useCrud(professionsApi);
 
     const {
         opened,
@@ -46,7 +46,7 @@ function Professions() {
                 <div>Loading...</div>
             ) : (
                 <DataTable
-                    columns={api.columns}
+                    columns={professionColumns}
                     data={professions}
                     onAdd={openCreateModal}
                     onEdit={openEditModal}

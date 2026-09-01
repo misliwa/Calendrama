@@ -1,7 +1,7 @@
 import PageLayout from "../components/PageLayout.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
-import * as api from "../api/stages.js";
+import {stagesApi, stagesColumns} from "../api/stages.js";
 import StageModal from "../components/StageModal.jsx";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
@@ -15,7 +15,7 @@ function Stages() {
         updateItem,
         deleteItem,
         deleteSelectedItems
-    } = useCrud(api);
+    } = useCrud(stagesApi);
 
     const {
         opened,
@@ -46,7 +46,7 @@ function Stages() {
                 <div>Loading...</div>
             ) : (
                 <DataTable
-                    columns={api.columns}
+                    columns={stagesColumns}
                     data={stages}
                     onAdd={openCreateModal}
                     onEdit={openEditModal}

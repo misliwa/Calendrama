@@ -1,6 +1,6 @@
 import {createBasicCrudApi} from "./basicCrud.js";
 
-export const columns = [
+export const professionColumns = [
     {
         name: "id",
         getValue: profession => profession.id
@@ -11,9 +11,4 @@ export const columns = [
     }
 ];
 
-export const {
-    create,
-    updateById,
-    findAll,
-    deleteById
-} = createBasicCrudApi("professions");
+export const professionsApi = createBasicCrudApi("professions");

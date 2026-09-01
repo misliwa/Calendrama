@@ -1,6 +1,6 @@
 import {createBasicCrudApi} from "./basicCrud.js";
 
-export const columns = [
+export const playColumns = [
     {
         name: "id",
         getValue: play => play.id
@@ -27,9 +27,4 @@ export const columns = [
     }
 ];
 
-export const {
-    create,
-    updateById,
-    findAll,
-    deleteById
-} = createBasicCrudApi("plays");
+export const playsApi = createBasicCrudApi("plays");

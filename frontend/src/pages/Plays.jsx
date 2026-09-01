@@ -1,43 +1,21 @@
 import PageLayout from "../components/PageLayout.jsx";
 import {useCrud} from "../hooks/useCrud.jsx";
 import * as api from "../api/plays.js";
-import * as stagesApi from "../api/stages.js";
-import {useCrudModal} from "../hooks/useCrudModal.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
-import PlayModal from "../components/PlayModal.jsx";
+import {useNavigate} from "react-router-dom";
 
 function Plays(){
     const {
         items: plays,
         error,
         loading,
-        createItem,
-        updateItem,
         deleteItem,
         deleteSelectedItems
     } = useCrud(api);
+    q
+    const navigate = useNavigate();
 
-    const {
-        opened,
-        editedItem: editedPlay,
-        openCreateModal,
-        openEditModal,
-        closeModal
-    } = useCrudModal();
-
-    const {
-        items: stages
-    } = useCrud(stagesApi)
-
-
-    const handleModalSubmit = async (values) => {
-        if (editedPlay) {
-            await updateItem(editedPlay.id, values);
-        } else {
-            await createItem(values);
-        }
-    };
     return (
         <PageLayout title="Spektakle">
             <SearchBar/>
@@ -52,19 +30,14 @@ function Plays(){
                 <DataTable
                     columns={api.columns}
                     data={plays}
-                    onAdd={openCreateModal}
-                    onEdit={openEditModal}
+                    onAdd={() => navigate('/plays/new')}
+                    onEdit={(play) =>
+                        navigate(`/plays/${play.id}/edit`)
+                    }
                     onDelete={deleteItem}
                     onDeleteSelected={deleteSelectedItems}
                 />
             )}
-            <PlayModal
-                opened={opened}
-                onClose={closeModal}
-                onSubmit={handleModalSubmit}
-                playToEdit={editedPlay}
-                stages={stages}
-            />
         </PageLayout>
     );
 }

@@ -77,10 +77,26 @@ export const createBasicCrudApi = (resourcePath) => {
         }
     };
 
+    const getById = async (id) => {
+        const response = await fetch(`${RESOURCE_API_URL}/${id}`);
+        const body = await response.json();
+
+        if (!response.ok) {
+            throw new ApiError(
+                body.error?.message ?? "Wystąpił błąd API",
+                response.status,
+                body.error?.code
+            );
+        }
+
+        return body;
+    };
+
     return {
         create,
         updateById,
         findAll,
-        deleteById
+        deleteById,
+        getById
     };
 }
