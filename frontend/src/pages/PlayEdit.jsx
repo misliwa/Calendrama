@@ -2,7 +2,7 @@ import PageLayout from "../components/PageLayout.jsx";
 import {useFocusReturn} from "@mantine/hooks";
 import {useForm} from "@mantine/form";
 import {useEffect, useState} from "react";
-import {Button, Group, NumberInput, Select, TextInput} from "@mantine/core";
+import {Button, Group, NumberInput, Select, Table, TextInput, Text} from "@mantine/core";
 import {DatePickerInput} from "@mantine/dates";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {playsApi, playColumns} from "../api/plays.js";
@@ -113,6 +113,21 @@ function PlayEdit() {
         }
     }, [editedPlay]);
 
+    const staffingData = [
+        { id: 6, profession: "Actor", roleName: 'Hamlet'},
+        { id: 7, profession: "Muzyk", roleName: '-'},
+        { id: 8, profession: "Actor", roleName: 'Ofelia'},
+        { id: 9, profession: "Inspicjent", roleName: '-'},
+    ];
+
+    const staffingRows = staffingData.map((element) => (
+        <Table.Tr key={element.id}>
+            <Table.Td>{element.id}</Table.Td>
+            <Table.Td>{element.profession}</Table.Td>
+            <Table.Td>{element.roleName}</Table.Td>
+        </Table.Tr>
+    ));
+
     return (
         <PageLayout title={"Szczegóły spektaklu"}>
             <form onSubmit={form.onSubmit((values => handleSubmit(values)))}>
@@ -164,6 +179,20 @@ function PlayEdit() {
                     <Button type="submit">Zapisz</Button>
                 </Group>
             </form>
+
+            <Text size="lg">Role i zadania</Text>
+            <Table striped highlightOnHover stickyHeader stickyHeaderOffset={60}>
+                <Table.Thead>
+                    <Table.Tr>
+                        <Table.Th>id</Table.Th>
+                        <Table.Th>Zawód</Table.Th>
+                        <Table.Th>Nazwa roli</Table.Th>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>{staffingRows}</Table.Tbody>
+            </Table>
+
+
         </PageLayout>
     );
 
