@@ -98,6 +98,17 @@ export function useCrud(api) {
 
     };
 
+    const getItemById = async (id) => {
+        try {
+            setError(null);
+            const item = await api.getById(id);
+            return item;
+        } catch (error) {
+            setError(error);
+            throw error;
+        }
+    }
+
     return {
         items,
         error,
@@ -105,6 +116,7 @@ export function useCrud(api) {
         createItem,
         updateItem,
         deleteItem,
-        deleteSelectedItems
+        deleteSelectedItems,
+        getItemById
     };
 }

@@ -1,6 +1,6 @@
 import PageLayout from "../components/PageLayout.jsx";
 import {useCrud} from "../hooks/useCrud.jsx";
-import * as api from "../api/plays.js";
+import {playsApi, playColumns} from "../api/plays.js";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
 import {useNavigate} from "react-router-dom";
@@ -12,8 +12,8 @@ function Plays(){
         loading,
         deleteItem,
         deleteSelectedItems
-    } = useCrud(api);
-    q
+    } = useCrud(playsApi);
+
     const navigate = useNavigate();
 
     return (
@@ -28,7 +28,7 @@ function Plays(){
                 <div>Loading...</div>
             ) : (
                 <DataTable
-                    columns={api.columns}
+                    columns={playColumns}
                     data={plays}
                     onAdd={() => navigate('/plays/new')}
                     onEdit={(play) =>

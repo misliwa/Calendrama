@@ -4,14 +4,14 @@ import {ApiError} from "./ApiError.js";
 export const createBasicCrudApi = (resourcePath) => {
     const RESOURCE_API_URL = `${API_BASE_URL}/${resourcePath}`;
 
-    const create = async (stage) => {
+    const create = async (item) => {
         const response = await fetch(`${RESOURCE_API_URL}`,
             {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(stage)
+                body: JSON.stringify(item)
             });
         const body = await response.json();
 
@@ -26,14 +26,14 @@ export const createBasicCrudApi = (resourcePath) => {
         return body;
     };
 
-    const updateById = async (id, stage) => {
+    const updateById = async (id, item) => {
         const response = await fetch(`${RESOURCE_API_URL}/${id}`,
             {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(stage)
+                body: JSON.stringify(item)
             });
         const body = await response.json();
 

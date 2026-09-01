@@ -10,7 +10,7 @@ import {stagesApi} from "../api/stages.js";
 import {useParams} from "react-router-dom";
 
 function PlayEdit() {
-    const { editedPlayId } = useParams();
+    const { id: editedPlayId } = useParams();
     const isEditMode = !!editedPlayId;
     const [editedPlay, setEditedPlay] = useState(null);
 
@@ -18,7 +18,7 @@ function PlayEdit() {
         items: plays,
         createItem,
         updateItem,
-        getById
+        getItemById: getPlayById
     } = useCrud(playsApi);
 
     const {
@@ -30,7 +30,7 @@ function PlayEdit() {
             return;
         }
         const loadPlay = async () => {
-            const play = await getById(editedPlayId);
+            const play = await getPlayById(editedPlayId);
             setEditedPlay(play);
         };
 
