@@ -1,6 +1,6 @@
 import {createBasicCrudApi} from "./basicCrud.js";
 
-export const stagesColumns = [
+export const stageColumns = [
     {
         name: "id",
         getValue: stage => stage.id

@@ -1,7 +1,7 @@
 import PageLayout from "../components/PageLayout.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
-import {stagesApi, stagesColumns} from "../api/stages.js";
+import {stagesApi, stageColumns} from "../api/stages.js";
 import StageModal from "../components/StageModal.jsx";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
@@ -46,7 +46,7 @@ function Stages() {
                 <div>Loading...</div>
             ) : (
                 <DataTable
-                    columns={stagesColumns}
+                    columns={stageColumns}
                     data={stages}
                     onAdd={openCreateModal}
                     onEdit={openEditModal}
