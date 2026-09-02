@@ -13,12 +13,13 @@ import StaffingAccordion from "../components/StaffingAccordion.jsx";
 import StaffingModal from "../components/StaffingModal.jsx";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
 import {useNavigate} from "react-router-dom";
+import {useStaffingManager} from "../hooks/useStaffingManager.jsx";
 
 function PlayEdit() {
     const {id: editedPlayId} = useParams();
     const isEditMode = !!editedPlayId;
     const [editedPlay, setEditedPlay] = useState(null);
-    const [staffingData, setStaffingData] = useState([]);
+    //const [staffingData, setStaffingData] = useState([]);
 
     const navigate = useNavigate();
 
@@ -44,6 +45,14 @@ function PlayEdit() {
         closeModal
     } = useCrudModal();
 
+    const {
+        staffingData,
+        setStaffingData,
+        addStaffing,
+        updateStaffing,
+        deleteStaffing
+    } = useStaffingManager();
+
     const handleModalSubmit = (values) => {
         const existingProfession = professions.find(
             profession =>
@@ -63,24 +72,12 @@ function PlayEdit() {
         };
 
         if (editedStaffing) {
-            setStaffingData(previous => previous
-                .map(staffing =>
-                    staffing.clientId === editedStaffing.clientId ?
-                        {...staffing, ...staffingValues}
-                        : staffing
-                ))
+            updateStaffing(editedStaffing, staffingValues)
         } else {
-            setStaffingData(prev => [
-                ...prev,
-                {
-                    ...staffingValues,
-                    id: null,
-                    clientId: crypto.randomUUID()
-                }
-            ]);
+            addStaffing(staffingValues);
         }
+        closeModal();
     };
-
 
     useEffect(() => {
         if (!editedPlayId) {
@@ -111,21 +108,13 @@ function PlayEdit() {
         label: stage.name,
     }));
 
-    const handleDeleteStaffing = (staffingToDelete) =>
-        setStaffingData(prev =>
-            prev.filter(
-                staffing =>
-                    staffing.clientId !== staffingToDelete.clientId
-            )
-        );
-
     const handleSubmit = async (values) => {
         const payload = {
             ...values,
             durationInMinutes: Number(values.durationInMinutes),
             stageId: Number(values.stageId),
             staffings: staffingData.map(
-                ({ clientId, ...staffing }) => staffing
+                ({clientId, ...staffing}) => staffing
             )
         };
 
@@ -195,7 +184,6 @@ function PlayEdit() {
         }
     }, [editedPlay]);
 
-
     return (
         <PageLayout title={"Szczegóły spektaklu"}>
             <form onSubmit={form.onSubmit((values => handleSubmit(values)))}>
@@ -246,15 +234,15 @@ function PlayEdit() {
                     data={stageOptions}
                 />
 
-
                 <Group mt="md" mb="sm">
                     <Text size="lg">Role i zadania</Text>
                     <Button type="button" onClick={openCreateModal}>Dodaj</Button>
                 </Group>
+
                 <StaffingAccordion
                     staffingData={staffingData}
                     onEdit={openEditModal}
-                    onDelete={handleDeleteStaffing}
+                    onDelete={deleteStaffing}
                 />
 
                 <Group justify="flex-end" mt="md">
@@ -269,7 +257,6 @@ function PlayEdit() {
                 staffingToEdit={editedStaffing}
                 professions={professions}
             >
-
             </StaffingModal>
         </PageLayout>
     );

@@ -46,7 +46,7 @@ public class PlayService {
         Play play = PlayMapper.detailedToEntity(playDetailsDTO, stage);
 
 
-        if(playDetailsDTO.staffings() != null) {
+        if (playDetailsDTO.staffings() != null) {
             for (PlayStaffingDTO playStaffing
                     : playDetailsDTO.staffings()) {
 
@@ -111,11 +111,9 @@ public class PlayService {
                         new ResourceNotFoundException("Stage", id));
     }
 
-    private void addStaffingToPlay(Play play, PlayStaffingDTO playStaffingDTO){
+    private void addStaffingToPlay(Play play, PlayStaffingDTO playStaffingDTO) {
         Profession profession = professionService.getOrCreate(playStaffingDTO.profession());
-
         PlayStaffing playStaffing = PlayStaffingMapper.toEntity(playStaffingDTO, profession);
-
         play.addPlayStaffing(playStaffing);
     }
 
