@@ -76,7 +76,6 @@ function PlayEdit() {
         } else {
             addStaffing(staffingValues);
         }
-        closeModal();
     };
 
     useEffect(() => {
@@ -186,7 +185,7 @@ function PlayEdit() {
 
     return (
         <PageLayout title={"Szczegóły spektaklu"}>
-            <form onSubmit={form.onSubmit((values => handleSubmit(values)))}>
+            <form onSubmit={form.onSubmit(handleSubmit)}>
                 <TextInput
                     withAsterisk
                     label="Tytuł"
