@@ -33,6 +33,11 @@ public class EmployeeService {
         return null;
     }
 
+    @Transactional
+    public EmployeeDTO updateById(Long id, EmployeeDTO employeeDTO){
+        return null;
+    }
+
     public EmployeeDTO findById(Long id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(RESOURCE_NAME, id)
