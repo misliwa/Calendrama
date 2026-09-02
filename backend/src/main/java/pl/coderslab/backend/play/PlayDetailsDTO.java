@@ -34,4 +34,9 @@ public record PlayDetailsDTO(
         @NotNull
         List<PlayStaffingDTO> staffings
 ) {
+        public PlayDetailsDTO {
+                if (staffings == null) {
+                        staffings = List.of();
+                }
+        }
 }
