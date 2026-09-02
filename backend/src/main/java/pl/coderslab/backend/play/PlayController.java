@@ -29,10 +29,10 @@ public class PlayController {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<PlayResponseDTO> updateById(@PathVariable("id") Long id, @Valid @RequestBody PlayRequestDTO playDTO){
-        return ResponseEntity.ok(service.updateById(id, playDTO));
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<PlayResponseDTO> updateById(@PathVariable("id") Long id, @Valid @RequestBody PlayRequestDTO playDTO){
+//        return ResponseEntity.ok(service.updateById(id, playDTO));
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable("id") Long id){
@@ -43,6 +43,11 @@ public class PlayController {
     @PostMapping("")
     public ResponseEntity<PlayDetailsDTO> createDetailed(@Valid @RequestBody PlayDetailsDTO playDetailsDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createDetailed(playDetailsDTO));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PlayDetailsDTO> updateDetailedById(@PathVariable("id") Long id, @Valid @RequestBody PlayDetailsDTO playDetailsDTO){
+        return ResponseEntity.ok(service.updateDetailedById(id, playDetailsDTO));
     }
 
 }

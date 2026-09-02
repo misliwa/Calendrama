@@ -119,8 +119,9 @@ function PlayEdit() {
 
         try {
             if (isEditMode) {
-                //await updateItem(editedPlayId, payload);
                 console.log(payload);
+                await updateItem(editedPlayId, payload);
+                navigate(`/plays`);
             } else {
                 console.log(payload);
                 await createItem(payload);

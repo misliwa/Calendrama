@@ -12,7 +12,9 @@ import pl.coderslab.backend.profession.ProfessionService;
 import pl.coderslab.backend.stage.Stage;
 import pl.coderslab.backend.stage.StageRepository;
 
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +52,7 @@ public class PlayService {
             for (PlayStaffingDTO playStaffing
                     : playDetailsDTO.staffings()) {
 
-                addStaffingToPlay(play, playStaffing);
+                addStaffingDTOToPlay(play, playStaffing);
             }
         }
 
@@ -68,6 +70,12 @@ public class PlayService {
         Stage updatedStage = getStage(playDetailsDTO.stageId());
 
         PlayMapper.updateEntity(play, playDetailsDTO, updatedStage);
+
+        List<PlayStaffingDTO> requestedStaffings = playDetailsDTO.staffings();
+
+        if (requestedStaffings != null) {
+            updatePlayStaffings(play, requestedStaffings);
+        }
 
         Play savedPlay = playRepository.save(play);
         return PlayMapper.toDetailedDTO(savedPlay);
@@ -111,10 +119,45 @@ public class PlayService {
                         new ResourceNotFoundException("Stage", id));
     }
 
-    private void addStaffingToPlay(Play play, PlayStaffingDTO playStaffingDTO) {
+    private void addStaffingDTOToPlay(Play play, PlayStaffingDTO playStaffingDTO) {
         Profession profession = professionService.getOrCreate(playStaffingDTO.profession());
         PlayStaffing playStaffing = PlayStaffingMapper.toEntity(playStaffingDTO, profession);
         play.addPlayStaffing(playStaffing);
+    }
+
+    private void updatePlayStaffings(Play play, List<PlayStaffingDTO> requestedStaffings){
+        Map<Long, PlayStaffing> existingStaffingsById = play.getPlayStaffings().stream()
+                .filter(staffing -> staffing.getId() != null)
+                .collect(Collectors.toMap(
+                        PlayStaffing::getId,
+                        Function.identity()
+                ));
+
+        Set<Long> requestedStaffingIds = requestedStaffings.stream()
+                .map(PlayStaffingDTO::id)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        for (PlayStaffing existingStaffing : new ArrayList<>(play.getPlayStaffings())) {
+            if(!requestedStaffingIds.contains(existingStaffing.getId())){
+                play.removePlayStaffing(existingStaffing);
+            }
+        }
+
+        for (PlayStaffingDTO requestedStaffing : requestedStaffings) {
+            if(requestedStaffing.id() == null){
+                addStaffingDTOToPlay(play, requestedStaffing);
+                continue;
+            }
+
+            PlayStaffing existingStaffing = existingStaffingsById.get(requestedStaffing.id());
+            if(existingStaffing == null){
+                throw new ResourceNotFoundException(PlayStaffing.class.getSimpleName(), requestedStaffing.id());
+
+            }
+            existingStaffing.setRoleName(requestedStaffing.roleName());
+            existingStaffing.setProfession(professionService.getOrCreate(requestedStaffing.profession()));
+        }
     }
 
 }

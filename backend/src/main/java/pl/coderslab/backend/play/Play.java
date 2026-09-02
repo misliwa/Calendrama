@@ -13,6 +13,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 @Getter
 @Setter
@@ -57,10 +58,8 @@ public class Play {
         playStaffing.setPlay(this);
     }
 
-    public void removePlayStaffing(
-            PlayStaffing playStaffing
-    ) {
-        playStaffings.remove(playStaffing);
+    public void removePlayStaffing(PlayStaffing playStaffing){
+        this.playStaffings.remove(playStaffing);
         playStaffing.setPlay(null);
     }
 }
