@@ -15,4 +15,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         apiError.setCode(exception.getErrorCode());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(EmployeeMissingProfessionException.class)
+    protected ResponseEntity<Object> handleEmployeeMissingProfession(EmployeeMissingProfessionException exception) {
+        CustomError apiError = new CustomError(exception);
+        apiError.setCode(exception.getErrorCode());
+        return new ResponseEntity<>(apiError, HttpStatus.UNPROCESSABLE_CONTENT);
+    }
 }

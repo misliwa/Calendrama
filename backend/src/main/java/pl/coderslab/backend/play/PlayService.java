@@ -5,8 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
 import pl.coderslab.backend.play_staffing.PlayStaffing;
-import pl.coderslab.backend.play_staffing.PlayStaffingDTO;
+import pl.coderslab.backend.play_staffing.PlayStaffingRequestDTO;
 import pl.coderslab.backend.play_staffing.PlayStaffingMapper;
+import pl.coderslab.backend.play_staffing_capability.PlayStaffingCapabilityService;
 import pl.coderslab.backend.profession.Profession;
 import pl.coderslab.backend.profession.ProfessionService;
 import pl.coderslab.backend.stage.Stage;
@@ -23,6 +24,7 @@ public class PlayService {
     private final StageRepository stageRepository;
     private static final String RESOURCE_NAME = Play.class.getSimpleName();
     private final ProfessionService professionService;
+    private final PlayStaffingCapabilityService capabilityService;
 
 
     public List<PlayResponseDTO> findAll() {
@@ -43,13 +45,13 @@ public class PlayService {
     }
 
     @Transactional
-    public PlayDetailsDTO createDetailed(PlayDetailsDTO playDetailsDTO) {
+    public PlayDetailsResponseDTO createDetailed(PlayDetailsRequestDTO playDetailsDTO) {
         Stage stage = getStage(playDetailsDTO.stageId());
         Play play = PlayMapper.detailedToEntity(playDetailsDTO, stage);
 
 
         if (playDetailsDTO.staffings() != null) {
-            for (PlayStaffingDTO playStaffing
+            for (PlayStaffingRequestDTO playStaffing
                     : playDetailsDTO.staffings()) {
 
                 addStaffingDTOToPlay(play, playStaffing);
@@ -62,7 +64,7 @@ public class PlayService {
     }
 
     @Transactional
-    public PlayDetailsDTO updateDetailedById(Long id, PlayDetailsDTO playDetailsDTO) {
+    public PlayDetailsResponseDTO updateDetailedById(Long id, PlayDetailsRequestDTO playDetailsDTO) {
         Play play = playRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(RESOURCE_NAME, id)
         );
@@ -71,11 +73,9 @@ public class PlayService {
 
         PlayMapper.updateEntity(play, playDetailsDTO, updatedStage);
 
-        List<PlayStaffingDTO> requestedStaffings = playDetailsDTO.staffings();
+        List<PlayStaffingRequestDTO> requestedStaffings = playDetailsDTO.staffings();
 
-        if (requestedStaffings != null) {
-            updatePlayStaffings(play, requestedStaffings);
-        }
+        updatePlayStaffings(play, requestedStaffings);
 
         Play savedPlay = playRepository.save(play);
         return PlayMapper.toDetailedDTO(savedPlay);
@@ -119,13 +119,18 @@ public class PlayService {
                         new ResourceNotFoundException("Stage", id));
     }
 
-    private void addStaffingDTOToPlay(Play play, PlayStaffingDTO playStaffingDTO) {
+    private void addStaffingDTOToPlay(Play play, PlayStaffingRequestDTO playStaffingDTO) {
         Profession profession = professionService.getOrCreate(playStaffingDTO.profession());
         PlayStaffing playStaffing = PlayStaffingMapper.toEntity(playStaffingDTO, profession);
         play.addPlayStaffing(playStaffing);
+
+        capabilityService.synchronizeCapabilities(
+                playStaffing,
+                playStaffingDTO.employeeIds()
+        );
     }
 
-    private void updatePlayStaffings(Play play, List<PlayStaffingDTO> requestedStaffings){
+    private void updatePlayStaffings(Play play, List<PlayStaffingRequestDTO> requestedStaffings) {
         Map<Long, PlayStaffing> existingStaffingsById = play.getPlayStaffings().stream()
                 .filter(staffing -> staffing.getId() != null)
                 .collect(Collectors.toMap(
@@ -134,30 +139,42 @@ public class PlayService {
                 ));
 
         Set<Long> requestedStaffingIds = requestedStaffings.stream()
-                .map(PlayStaffingDTO::id)
+                .map(PlayStaffingRequestDTO::id)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
         for (PlayStaffing existingStaffing : new ArrayList<>(play.getPlayStaffings())) {
-            if(!requestedStaffingIds.contains(existingStaffing.getId())){
+            if (!requestedStaffingIds.contains(existingStaffing.getId())) {
                 play.removePlayStaffing(existingStaffing);
             }
         }
 
-        for (PlayStaffingDTO requestedStaffing : requestedStaffings) {
-            if(requestedStaffing.id() == null){
+        for (PlayStaffingRequestDTO requestedStaffing : requestedStaffings) {
+            if (requestedStaffing.id() == null) {
                 addStaffingDTOToPlay(play, requestedStaffing);
                 continue;
             }
 
+
             PlayStaffing existingStaffing = existingStaffingsById.get(requestedStaffing.id());
-            if(existingStaffing == null){
+            if (existingStaffing == null) {
                 throw new ResourceNotFoundException(PlayStaffing.class.getSimpleName(), requestedStaffing.id());
 
             }
-            existingStaffing.setRoleName(requestedStaffing.roleName());
-            existingStaffing.setProfession(professionService.getOrCreate(requestedStaffing.profession()));
+            Profession profession = professionService.getOrCreate(
+                    requestedStaffing.profession()
+            );
+
+            PlayStaffingMapper.updateEntity(
+                    existingStaffing,
+                    requestedStaffing,
+                    profession
+            );
+
+            capabilityService.synchronizeCapabilities(
+                    existingStaffing,
+                    requestedStaffing.employeeIds()
+            );
         }
     }
-
 }

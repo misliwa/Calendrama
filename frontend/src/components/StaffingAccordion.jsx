@@ -1,6 +1,8 @@
-import {Accordion, Button, Group, Text} from "@mantine/core";
+import {Accordion, Button, Group, Select, Text} from "@mantine/core";
+import {useState} from "react";
+import StaffingAccordionItem from "./StaffingAccordionItem.jsx";
 
-function StaffingAccordion({staffingData, onEdit, onDelete}){
+function StaffingAccordion({staffingData, onEdit, onDelete, employees, onAddEmployee, onDeleteEmployee}){
     return(
         staffingData.length === 0 ? (
                 <Text c="dimmed">
@@ -13,35 +15,32 @@ function StaffingAccordion({staffingData, onEdit, onDelete}){
                             ? `${staffing.profession.name} - ${staffing.roleName}`
                             : staffing.profession.name;
 
+                        const employeeOptions = employees
+                            .filter(employee =>
+                                employee.professions.some(
+                                    profession =>
+                                        profession.id === staffing.profession.id
+                                )
+                            )
+                            .filter(employee => !staffing.capabilities.some(capability => capability.employee.id === employee.id))
+                            .map(employee => ({
+                                value: employee.id.toString(),
+                                label: `${employee.id}. ${employee.firstName} ${employee.lastName}`,
+                            }));
+
+                        console.log(staffing);
+
                         return (
-                            <Accordion.Item
+                            <StaffingAccordionItem
                                 key={staffing.clientId}
-                                value={staffing.clientId}
-                            >
-                                <Accordion.Control icon="👤">
-                                    {staffingName}
-                                </Accordion.Control>
-
-                                <Accordion.Panel>
-                                    <Text c="dimmed" mb="sm">
-                                        Pracownicy przypisani do tej roli
-                                    </Text>
-
-                                    <Group justify="flex-end" mt="md">
-                                        <Button variant="light" type="button">
-                                            Dodaj pracownika
-                                        </Button>
-
-                                        <Button variant="default" type="button" onClick={() => onEdit(staffing)}>
-                                            Edytuj rolę
-                                        </Button>
-
-                                        <Button color="red" variant="light" type="button" onClick={() => onDelete(staffing)}>
-                                            Usuń rolę
-                                        </Button>
-                                    </Group>
-                                </Accordion.Panel>
-                            </Accordion.Item>
+                                staffing={staffing}
+                                staffingName={staffingName}
+                                employeeOptions={employeeOptions}
+                                onEdit={onEdit}
+                                onDelete={onDelete}
+                                onAddEmployee={onAddEmployee}
+                                onDeleteEmployee={onDeleteEmployee}
+                                />
                         );
                     })}
                 </Accordion>

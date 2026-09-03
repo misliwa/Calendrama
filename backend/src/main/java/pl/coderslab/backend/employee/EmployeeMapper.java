@@ -34,4 +34,12 @@ public class EmployeeMapper {
         employee.setLastName(dto.lastName());
         employee.setEmployed(dto.employed());
     }
+
+    public static EmployeeBasicDTO toBasicDTO(Employee employee){
+        return new EmployeeBasicDTO(
+                employee.getId(),
+                employee.getFirstName(),
+                employee.getLastName()
+        );
+    }
 }

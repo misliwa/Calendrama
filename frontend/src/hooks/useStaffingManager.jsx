@@ -19,7 +19,8 @@ export function useStaffingManager() {
             {
                 ...newValues,
                 id: null,
-                clientId: crypto.randomUUID()
+                clientId: crypto.randomUUID(),
+                capabilities: []
             }
         ]);
     }

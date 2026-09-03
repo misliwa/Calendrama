@@ -1,5 +1,5 @@
 package pl.coderslab.backend.exception;
 
 public enum ErrorCode {
-    RESOURCE_NOT_FOUND
+    RESOURCE_NOT_FOUND, EMPLOYEE_MISSING_PROFESSION
 }

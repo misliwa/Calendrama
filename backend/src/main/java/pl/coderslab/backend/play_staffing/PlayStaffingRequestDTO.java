@@ -1,0 +1,19 @@
+package pl.coderslab.backend.play_staffing;
+
+import pl.coderslab.backend.play_staffing_capability.PlayStaffingCapabilityDTO;
+import pl.coderslab.backend.profession.ProfessionDTO;
+
+import java.util.Set;
+
+public record PlayStaffingRequestDTO(
+        Long id,
+        ProfessionDTO profession,
+        String roleName,
+        Set<Long> employeeIds
+) {
+    public PlayStaffingRequestDTO {
+        employeeIds = employeeIds == null
+                ? Set.of()
+                : Set.copyOf(employeeIds);
+    }
+}

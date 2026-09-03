@@ -1,10 +1,8 @@
 package pl.coderslab.backend.play;
 
-import pl.coderslab.backend.play_staffing.PlayStaffing;
 import pl.coderslab.backend.play_staffing.PlayStaffingMapper;
+import pl.coderslab.backend.play_staffing.PlayStaffingRequestDTO;
 import pl.coderslab.backend.stage.Stage;
-
-import java.util.List;
 
 public class PlayMapper {
     public static PlayResponseDTO toDTO(Play play){
@@ -29,8 +27,8 @@ public class PlayMapper {
                 .build();
     }
 
-    public static PlayDetailsDTO toDetailedDTO(Play play){
-        return new PlayDetailsDTO(
+    public static PlayDetailsResponseDTO toDetailedDTO(Play play){
+        return new PlayDetailsResponseDTO(
                 play.getId(),
                 play.getTitle(),
                 play.getDescription(),
@@ -44,7 +42,7 @@ public class PlayMapper {
         );
     }
 
-    public static Play detailedToEntity(PlayDetailsDTO playDetailsDTO, Stage stage){
+    public static Play detailedToEntity(PlayDetailsRequestDTO playDetailsDTO, Stage stage){
         return Play.builder()
                 .title(playDetailsDTO.title())
                 .description(playDetailsDTO.description())
@@ -62,7 +60,7 @@ public class PlayMapper {
         play.setStage(stage);
     }
 
-    public static void updateEntity(Play play, PlayDetailsDTO dto, Stage stage) {
+    public static void updateEntity(Play play, PlayDetailsRequestDTO dto, Stage stage) {
         play.setTitle(dto.title());
         play.setDescription(dto.description());
         play.setPremiereDate(dto.premiereDate());

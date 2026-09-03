@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.backend.play_staffing.PlayStaffingRequestDTO;
 
 import java.util.List;
 
@@ -41,12 +42,12 @@ public class PlayController {
     }
 
     @PostMapping("")
-    public ResponseEntity<PlayDetailsDTO> createDetailed(@Valid @RequestBody PlayDetailsDTO playDetailsDTO){
+    public ResponseEntity<PlayDetailsResponseDTO> createDetailed(@Valid @RequestBody PlayDetailsRequestDTO playDetailsDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createDetailed(playDetailsDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PlayDetailsDTO> updateDetailedById(@PathVariable("id") Long id, @Valid @RequestBody PlayDetailsDTO playDetailsDTO){
+    public ResponseEntity<PlayDetailsResponseDTO> updateDetailedById(@PathVariable("id") Long id, @Valid @RequestBody PlayDetailsRequestDTO playDetailsDTO){
         return ResponseEntity.ok(service.updateDetailedById(id, playDetailsDTO));
     }
 

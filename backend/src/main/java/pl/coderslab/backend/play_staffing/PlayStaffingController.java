@@ -13,7 +13,7 @@ public class PlayStaffingController {
     private final PlayStaffingService staffingService;
 
     @GetMapping("")
-    public ResponseEntity<List<PlayStaffingDTO>> findAllByPlayId(@PathVariable("playId") Long playId){
+    public ResponseEntity<List<PlayStaffingResponseDTO>> findAllByPlayId(@PathVariable("playId") Long playId){
         return ResponseEntity.ok(staffingService.findAllByPlayId(playId));
     }
 }

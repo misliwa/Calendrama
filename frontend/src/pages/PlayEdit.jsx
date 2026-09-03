@@ -1,7 +1,7 @@
 import PageLayout from "../components/PageLayout.jsx";
 import {useForm} from "@mantine/form";
 import {useEffect, useState} from "react";
-import {Button, Group, NumberInput, Select, TextInput, Text} from "@mantine/core";
+import {Button, Group, NumberInput, Select, TextInput, Text, em} from "@mantine/core";
 import {DatePickerInput} from "@mantine/dates";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {playsApi} from "../api/plays.js";
@@ -14,13 +14,12 @@ import StaffingModal from "../components/StaffingModal.jsx";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
 import {useNavigate} from "react-router-dom";
 import {useStaffingManager} from "../hooks/useStaffingManager.jsx";
+import {employeesApi} from "../api/employees.js";
 
 function PlayEdit() {
     const {id: editedPlayId} = useParams();
     const isEditMode = !!editedPlayId;
     const [editedPlay, setEditedPlay] = useState(null);
-    //const [staffingData, setStaffingData] = useState([]);
-
     const navigate = useNavigate();
 
     const {
@@ -36,6 +35,10 @@ function PlayEdit() {
     const {
         items: professions
     } = useCrud(professionsApi);
+
+    const {
+        items: employees
+    } = useCrud(employeesApi);
 
     const {
         opened,
@@ -92,7 +95,11 @@ function PlayEdit() {
             setStaffingData(
                 staffings.map(staffing => ({
                     ...staffing,
-                    clientId: crypto.randomUUID()
+                    clientId: crypto.randomUUID(),
+                    capabilities: staffing.capabilities ? staffing.capabilities.map(capability => ({
+                        ...capability,
+                        clientId: crypto.randomUUID()
+                    })) : []
                 }))
             );
         };
@@ -113,7 +120,13 @@ function PlayEdit() {
             durationInMinutes: Number(values.durationInMinutes),
             stageId: Number(values.stageId),
             staffings: staffingData.map(
-                ({clientId, ...staffing}) => staffing
+                ({clientId, capabilities, ...staffing}) => ({
+                    ...staffing,
+                    employeeIds:
+                        capabilities?.map(
+                            capability => capability.employee.id
+                        ) ?? []
+                })
             )
         };
 
@@ -131,6 +144,63 @@ function PlayEdit() {
             console.error('Nie udało się zapisać spektaklu:', error);
         }
     };
+
+    const handleAddEmployee = (staffingClientId, employeeId) => {
+        if (!employeeId) {
+            return;
+        }
+
+        const employee = employees.find(
+            e => e.id === Number(employeeId)
+        );
+
+        if(!employee){
+            return;
+        }
+
+        setStaffingData((prevState) => prevState.map(
+            staffing => {
+                if (staffing.clientId !== staffingClientId) {
+                    return staffing;
+                }
+
+                const alreadyAssigned = staffing.capabilities?.some(
+                    c => c.employee.id === employee.id
+                );
+
+                if (alreadyAssigned) {
+                    return staffing;
+                }
+
+                return {
+                    ...staffing,
+                    capabilities: [
+                        ...staffing.capabilities,
+                        {
+                            clientId: crypto.randomUUID(),
+                            employee
+                        }
+                    ]
+                }
+            }
+
+        ));
+    };
+
+    const handleDeleteEmployee = (staffingClientId, capabilityClientId) => {
+        setStaffingData((prevState) => prevState.map(
+            staffing => {
+                if (staffing.clientId !== staffingClientId) {
+                    return staffing;
+                }
+
+                return {
+                    ...staffing,
+                    capabilities: staffing.capabilities.filter(capability => capability.clientId !== capabilityClientId)
+                }
+            }
+        ));
+    }
 
     const form = useForm({
         mode: 'uncontrolled',
@@ -243,6 +313,9 @@ function PlayEdit() {
                     staffingData={staffingData}
                     onEdit={openEditModal}
                     onDelete={deleteStaffing}
+                    employees={employees}
+                    onAddEmployee={handleAddEmployee}
+                    onDeleteEmployee={handleDeleteEmployee}
                 />
 
                 <Group justify="flex-end" mt="md">
