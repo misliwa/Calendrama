@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
 
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -56,20 +58,35 @@ public class ProfessionService {
         repository.delete(profession);
     }
 
-    public Profession getOrCreate(ProfessionDTO professionDTO){
-        if(professionDTO.id() != null){
+    public Profession getOrCreate(ProfessionDTO professionDTO) {
+        if (professionDTO.id() != null) {
             return repository.findById(professionDTO.id()).orElseThrow(() ->
                     new ResourceNotFoundException(RESOURCE_NAME, professionDTO.id())
             );
-        }else{
+        } else {
             String name = professionDTO.name().trim();
 
             return repository.findByNameIgnoreCase(name)
                     .orElseGet(() ->
-                       repository.save(Profession.builder()
-                               .name(name)
-                               .build())
+                            repository.save(Profession.builder()
+                                    .name(name)
+                                    .build())
                     );
         }
+    }
+
+    public Set<Profession> getProfessionsByIds(Set<Long> professionIds) {
+        Set<Profession> professions = new HashSet<>(
+                repository.findAllById(professionIds)
+        );
+
+        if (professions.size() != professionIds.size()) {
+            throw new ResourceNotFoundException(
+                    Profession.class.getSimpleName(),
+                    null
+            );
+        }
+
+        return professions;
     }
 }

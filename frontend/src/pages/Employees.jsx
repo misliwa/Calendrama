@@ -7,7 +7,6 @@ import {employeesApi, employeeColumns} from "../api/employees.js";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
 import EmployeeModal from "../components/EmployeeModal.jsx";
 import {professionsApi} from "../api/professions.js";
-import {useEffect} from "react";
 
 function Employees() {
     const {
@@ -32,7 +31,7 @@ function Employees() {
         openEditModal,
         closeModal
     } = useCrudModal();
-    
+
     const handleSubmit = async (values) => {
         const payload = {
             ...values,
@@ -42,7 +41,7 @@ function Employees() {
         try {
             if (editedEmployee) {
                 console.log(payload);
-                await updateItem(editedPlayId, payload);
+                await updateItem(editedEmployee.id, payload);
                 closeModal();
             } else {
                 console.log(payload);

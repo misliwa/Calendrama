@@ -27,4 +27,11 @@ public class EmployeeMapper {
                 .employed(employeeDTO.employed())
                 .build();
     }
+
+    public static void updateEntity(Employee employee, EmployeeRequestDTO dto, Set<Profession> professions){
+        employee.setProfessions(professions);
+        employee.setFirstName(dto.firstName());
+        employee.setLastName(dto.lastName());
+        employee.setEmployed(dto.employed());
+    }
 }
