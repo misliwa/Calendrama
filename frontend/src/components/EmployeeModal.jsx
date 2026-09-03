@@ -1,13 +1,25 @@
 import {Button, Checkbox, Group, Modal, MultiSelect, TextInput, Input} from "@mantine/core";
 import {useForm} from "@mantine/form";
 import {useEffect} from "react";
+import {useCrudModal} from "../hooks/useCrudModal.jsx";
+import ProfessionModal from "./ProfessionModal.jsx";
 
-function EmployeeModal({opened, onClose, onSubmit, employeeToEdit, professions}) {
+function EmployeeModal({opened, onClose, onSubmit, employeeToEdit, professions, createProfession}) {
 
     const professionOptions = (professions ?? []).map(profession => ({
         value: profession.id.toString(),
         label: profession.name,
     }));
+
+    const {
+        opened: professionModalOpened,
+        openCreateModal: openCreateProfessionModal,
+        closeModal: closeProfessionModal,
+    } = useCrudModal();
+
+    const handleProfessionModalSubmit = async (values) => {
+            await createProfession(values);
+    };
 
     const form = useForm({
         mode: 'uncontrolled',
@@ -39,9 +51,9 @@ function EmployeeModal({opened, onClose, onSubmit, employeeToEdit, professions})
             form.setValues({
                 firstName: employeeToEdit.firstName,
                 lastName: employeeToEdit.lastName,
-                    professions: employeeToEdit.professions.map(
-                        p => p.id.toString()
-                    ),
+                professions: employeeToEdit.professions.map(
+                    p => p.id.toString()
+                ),
                 employed: employeeToEdit.employed,
             });
         } else {
@@ -53,7 +65,6 @@ function EmployeeModal({opened, onClose, onSubmit, employeeToEdit, professions})
             });
         }
     }, [employeeToEdit]);
-
 
 
     const handleClose = () => {
@@ -94,12 +105,20 @@ function EmployeeModal({opened, onClose, onSubmit, employeeToEdit, professions})
                     data={professionOptions}
                     key={form.key('professions')}
                     {...form.getInputProps('professions')}
-                    />
+                />
+
+                <Button
+                    variant="subtle"
+                    type="button"
+                    onClick={openCreateProfessionModal}
+                >
+                    Dodaj nowy zawód
+                </Button>
 
                 <Input.Wrapper label="Status zatrudnienia">
                     <Checkbox
                         label="Pracownik etatowy"
-                        {...form.getInputProps("employed", { type: "checkbox" })}
+                        {...form.getInputProps("employed", {type: "checkbox"})}
                     />
                 </Input.Wrapper>
 
@@ -107,7 +126,14 @@ function EmployeeModal({opened, onClose, onSubmit, employeeToEdit, professions})
                     <Button type="submit">Zapisz</Button>
                 </Group>
             </form>
+
+            <ProfessionModal
+                opened={professionModalOpened}
+                onClose={closeProfessionModal}
+                onSubmit={handleProfessionModalSubmit}
+            />
         </Modal>
+
     );
 }
 

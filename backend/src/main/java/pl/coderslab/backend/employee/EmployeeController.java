@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.backend.profession.ProfessionDTO;
 
 import java.util.List;
 
@@ -16,22 +15,22 @@ public class EmployeeController {
     private final EmployeeService service;
 
     @GetMapping("")
-    public ResponseEntity<List<EmployeeDTO>> findAll(){
+    public ResponseEntity<List<EmployeeResponseDTO>> findAll(){
         return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping("")
-    public ResponseEntity<EmployeeDTO> create(@Valid @RequestBody EmployeeDTO employeeDTO){
+    public ResponseEntity<EmployeeResponseDTO> create(@Valid @RequestBody EmployeeRequestDTO employeeDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(employeeDTO));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDTO> findById(@PathVariable("id") Long id){
+    public ResponseEntity<EmployeeResponseDTO> findById(@PathVariable("id") Long id){
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDTO> updateById(@PathVariable("id") Long id, @Valid @RequestBody EmployeeDTO employeeDTO){
+    public ResponseEntity<EmployeeResponseDTO> updateById(@PathVariable("id") Long id, @Valid @RequestBody EmployeeRequestDTO employeeDTO){
         return ResponseEntity.ok(service.updateById(id, employeeDTO));
     }
 

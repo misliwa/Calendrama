@@ -7,6 +7,7 @@ import {employeesApi, employeeColumns} from "../api/employees.js";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
 import EmployeeModal from "../components/EmployeeModal.jsx";
 import {professionsApi} from "../api/professions.js";
+import {useEffect} from "react";
 
 function Employees() {
     const {
@@ -20,7 +21,8 @@ function Employees() {
     } = useCrud(employeesApi);
 
     const {
-        items: professions,
+        items: availableProfessions,
+        createItem: createProfession
     } = useCrud(professionsApi);
 
     const {
@@ -30,16 +32,27 @@ function Employees() {
         openEditModal,
         closeModal
     } = useCrudModal();
+    
+    const handleSubmit = async (values) => {
+        const payload = {
+            ...values,
+            professions: values.professions.map(Number)
+        };
 
-
-    const handleModalSubmit = async (values) => {
-        if (editedEmployee) {
-            await updateItem(editedEmployee.id, values);
-        } else {
-            await createItem(values);
+        try {
+            if (editedEmployee) {
+                console.log(payload);
+                await updateItem(editedPlayId, payload);
+                closeModal();
+            } else {
+                console.log(payload);
+                await createItem(payload);
+                closeModal();
+            }
+        } catch (error) {
+            console.error('Nie udało się zapisać pracownika:', error);
         }
     };
-
 
     return (
         <PageLayout title="Pracownicy Teatru">
@@ -65,9 +78,10 @@ function Employees() {
             <EmployeeModal
                 opened={opened}
                 onClose={closeModal}
-                onSubmit={handleModalSubmit}
+                onSubmit={handleSubmit}
                 employeeToEdit={editedEmployee}
-                professions={professions}
+                professions={availableProfessions}
+                createProfession={createProfession}
             />
         </PageLayout>
     )

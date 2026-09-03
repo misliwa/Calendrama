@@ -15,11 +15,17 @@ export const employeeColumns = [
     },
     {
         name: "Zawody",
-        getValue: employee => employee.professions
+        getValue: employee =>
+            employee.professions
+                .map(profession => profession.name)
+                .join(", ")
     },
     {
-        name: "Pracownik etetowy",
-        getValue: employee => employee.employed
+        name: "Status",
+        getValue: employee =>
+            employee.employed
+                ? "Etatowy"
+                : "Gościnny"
     }
 ];
 

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import pl.coderslab.backend.profession.ProfessionDTO;
 import java.util.Set;
 
-public record EmployeeDTO(
+public record EmployeeResponseDTO(
         Long id,
 
         @NotBlank
@@ -20,7 +20,7 @@ public record EmployeeDTO(
 
         boolean employed
 ) {
-    public EmployeeDTO {
+    public EmployeeResponseDTO {
         if (professions == null) {
             professions = Set.of();
         }
