@@ -6,11 +6,19 @@ import {WebSocketAlias} from "vite";
 export const unavailabilityColumns = [
     {
         name: "id",
-        getValue: profession => profession.id
+        getValue: unavailability => unavailability.id
     },
     {
-        name: "Nazwa",
-        getValue: profession => profession.name
+        name: "Od:",
+        getValue: unavailability => unavailability.startDateTime
+    },
+    {
+        name: "Do:",
+        getValue: unavailability => unavailability.endDateTime
+    },
+    {
+        name: "Opis:",
+        getValue: unavailability => unavailability.description
     }
 ];
 
