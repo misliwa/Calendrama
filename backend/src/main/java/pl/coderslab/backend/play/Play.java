@@ -21,6 +21,7 @@ import java.util.ListIterator;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "plays")
 public class Play {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
