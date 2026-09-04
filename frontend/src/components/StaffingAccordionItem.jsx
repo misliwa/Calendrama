@@ -21,7 +21,7 @@ function StaffingAccordionItem({staffing, employeeOptions, staffingName, onDelet
                 {staffing.capabilities?.map(capability => (
                     <Group key={capability.clientId}>
                         <Text>
-                            {`${capability.employee.id}. ${capability.employee.firstName} ${capability.employee.lastName} `}
+                            {`id:${capability.employee.id}. ${capability.employee.firstName} ${capability.employee.lastName} `}
                         </Text>
                         <Button type="button" color="red" variant="transparent" onClick={() => onDeleteEmployee(staffing.clientId, capability.clientId)}>Usuń</Button>
                     </Group>

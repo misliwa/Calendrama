@@ -68,5 +68,10 @@ public class EmployeeService {
         employeeRepository.delete(employee);
     }
 
+    public Employee findEmployeeById(Long employeeId) {
+        return employeeRepository.findById(employeeId).orElseThrow(
+                () -> new ResourceNotFoundException(Employee.class.getSimpleName(), employeeId)
+        );
+    }
 
 }
