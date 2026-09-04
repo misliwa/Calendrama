@@ -1,7 +1,7 @@
 import PageLayout from "../components/PageLayout.jsx";
 import {useForm} from "@mantine/form";
 import {useEffect, useState} from "react";
-import {Button, Group, NumberInput, Select, TextInput, Text} from "@mantine/core";
+import {Button, Group, NumberInput, Select, TextInput, Text, Box, ScrollArea} from "@mantine/core";
 import {DatePickerInput} from "@mantine/dates";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {playsApi} from "../api/plays.js";
@@ -154,7 +154,7 @@ function PlayEdit() {
             e => e.id === Number(employeeId)
         );
 
-        if(!employee){
+        if (!employee) {
             return;
         }
 
@@ -183,7 +183,6 @@ function PlayEdit() {
                     ]
                 }
             }
-
         ));
     };
 
@@ -255,70 +254,75 @@ function PlayEdit() {
     }, [editedPlay]);
 
     return (
-        <PageLayout title={"Szczegóły spektaklu"}>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
-                <TextInput
-                    withAsterisk
-                    label="Tytuł"
-                    placeholder="Tytuł Spektaklu"
-                    key={form.key('title')}
-                    {...form.getInputProps('title')}
-                />
+        <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
+            <form
+                onSubmit={form.onSubmit(handleSubmit)}
+                style={{flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, gap: '16px'}}
+            >
+                <ScrollArea style={{flex: 1, minHeight: 0}} p="xs">
+                    <TextInput
+                        withAsterisk
+                        label="Tytuł"
+                        placeholder="Tytuł Spektaklu"
+                        key={form.key('title')}
+                        {...form.getInputProps('title')}
+                    />
 
-                <TextInput
-                    mt="sm"
-                    withAsterisk
-                    label="Opis"
-                    placeholder="Opis spektaklu"
-                    key={form.key('description')}
-                    {...form.getInputProps('description')}
-                />
+                    <TextInput
+                        mt="sm"
+                        withAsterisk
+                        label="Opis"
+                        placeholder="Opis spektaklu"
+                        key={form.key('description')}
+                        {...form.getInputProps('description')}
+                    />
 
-                <DatePickerInput
-                    mt="sm"
-                    withAsterisk
-                    label="Data Premiery"
-                    placeholder="Wybierz datę"
-                    key={form.key('premiereDate')}
-                    {...form.getInputProps('premiereDate')}
-                />
+                    <DatePickerInput
+                        mt="sm"
+                        withAsterisk
+                        label="Data Premiery"
+                        placeholder="Wybierz datę"
+                        key={form.key('premiereDate')}
+                        {...form.getInputProps('premiereDate')}
+                    />
 
-                <NumberInput
-                    mt="sm"
-                    label="Czas trwania spektaklu"
-                    placeholder="Czas trwania spektaklu (m)"
-                    min={1}
-                    allowDecimal={false}
-                    allowNegative={false}
-                    key={form.key('durationInMinutes')}
-                    {...form.getInputProps('durationInMinutes')}
-                />
+                    <NumberInput
+                        mt="sm"
+                        label="Czas trwania spektaklu"
+                        placeholder="Czas trwania spektaklu (m)"
+                        min={1}
+                        allowDecimal={false}
+                        allowNegative={false}
+                        key={form.key('durationInMinutes')}
+                        {...form.getInputProps('durationInMinutes')}
+                    />
 
-                <Select
-                    mt="sm"
-                    withAsterisk
-                    label="Scena"
-                    placeholder="Wybierz scenę"
-                    key={form.key('stageId')}
-                    {...form.getInputProps('stageId')}
-                    data={stageOptions}
-                />
+                    <Select
+                        mt="sm"
+                        withAsterisk
+                        label="Scena"
+                        placeholder="Wybierz scenę"
+                        key={form.key('stageId')}
+                        {...form.getInputProps('stageId')}
+                        data={stageOptions}
+                    />
 
-                <Group mt="md" mb="sm">
-                    <Text size="lg">Role i zadania</Text>
-                    <Button type="button" onClick={openCreateModal}>Dodaj</Button>
-                </Group>
+                    <Group mt="md" mb="sm">
+                        <Text size="lg">Role i zadania</Text>
+                        <Button type="button" onClick={openCreateModal}>Dodaj</Button>
+                    </Group>
 
-                <StaffingAccordion
-                    staffingData={staffingData}
-                    onEdit={openEditModal}
-                    onDelete={deleteStaffing}
-                    employees={employees}
-                    onAddEmployee={handleAddEmployee}
-                    onDeleteEmployee={handleDeleteEmployee}
-                />
+                    <StaffingAccordion
+                        staffingData={staffingData}
+                        onEdit={openEditModal}
+                        onDelete={deleteStaffing}
+                        employees={employees}
+                        onAddEmployee={handleAddEmployee}
+                        onDeleteEmployee={handleDeleteEmployee}
+                    />
+                </ScrollArea>
 
-                <Group justify="flex-end" mt="md">
+                <Group justify="flex-end" tyle={{ flexShrink: 0, paddingTop: '8px' }}>
                     <Button type="submit">Zapisz</Button>
                 </Group>
             </form>
@@ -331,7 +335,7 @@ function PlayEdit() {
                 professions={professions}
             >
             </StaffingModal>
-        </PageLayout>
+        </Box>
     );
 
 }
