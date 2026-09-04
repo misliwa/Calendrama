@@ -1,7 +1,7 @@
 import PageLayout from "../components/PageLayout.jsx";
 import {useForm} from "@mantine/form";
 import {useEffect, useState} from "react";
-import {Button, Group, NumberInput, Select, TextInput, Text, em} from "@mantine/core";
+import {Button, Group, NumberInput, Select, TextInput, Text} from "@mantine/core";
 import {DatePickerInput} from "@mantine/dates";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {playsApi} from "../api/plays.js";

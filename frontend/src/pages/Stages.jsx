@@ -5,6 +5,8 @@ import {stagesApi, stageColumns} from "../api/stages.js";
 import StageModal from "../components/StageModal.jsx";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
+import {Box} from "@mantine/core";
+import MantineDataTable from "../components/MantineDataTable.jsx";
 
 function Stages() {
     const {
@@ -35,8 +37,7 @@ function Stages() {
 
 
     return (
-        <PageLayout title="Sceny">
-            <SearchBar/>
+        <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
             {error &&
                 <div className="alert alert-danger">
                     {error.message}
@@ -45,7 +46,7 @@ function Stages() {
             {loading ? (
                 <div>Loading...</div>
             ) : (
-                <DataTable
+                <MantineDataTable
                     columns={stageColumns}
                     data={stages}
                     onAdd={openCreateModal}
@@ -60,8 +61,7 @@ function Stages() {
                 onSubmit={handleModalSubmit}
                 stageToEdit={editedStage}
             />
-
-        </PageLayout>
+        </Box>
     );
 }
 

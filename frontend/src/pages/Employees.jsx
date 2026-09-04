@@ -7,6 +7,8 @@ import {employeesApi, employeeColumns} from "../api/employees.js";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
 import EmployeeModal from "../components/EmployeeModal.jsx";
 import {professionsApi} from "../api/professions.js";
+import MantineDataTable from "../components/MantineDataTable.jsx";
+import {Box} from "@mantine/core";
 
 function Employees() {
     const {
@@ -54,8 +56,7 @@ function Employees() {
     };
 
     return (
-        <PageLayout title="Pracownicy Teatru">
-            <SearchBar/>
+        <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
             {error &&
                 <div className="alert alert-danger">
                     {error.message}
@@ -64,7 +65,7 @@ function Employees() {
             {loading ? (
                 <div>Loading...</div>
             ) : (
-                <DataTable
+                <MantineDataTable
                     columns={employeeColumns}
                     data={employees}
                     onAdd={openCreateModal}
@@ -82,7 +83,7 @@ function Employees() {
                 professions={availableProfessions}
                 createProfession={createProfession}
             />
-        </PageLayout>
+        </Box>
     )
 }
 

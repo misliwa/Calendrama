@@ -1,11 +1,9 @@
 import Calendar from "../components/Calendar.jsx";
 import PageLayout from "../components/PageLayout.jsx";
 
-function Home(){
+function Home() {
     return (
-            <PageLayout title="Kalendarz Przedstawień">
-                <Calendar />
-            </PageLayout>
+        <Calendar/>
     );
 }
 

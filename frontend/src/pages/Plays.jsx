@@ -4,6 +4,8 @@ import {playsApi, playColumns} from "../api/plays.js";
 import SearchBar from "../components/SearchBar.jsx";
 import DataTable from "../components/DataTable.jsx";
 import {useNavigate} from "react-router-dom";
+import {Box} from "@mantine/core";
+import MantineDataTable from "../components/MantineDataTable.jsx";
 
 function Plays(){
     const {
@@ -17,8 +19,7 @@ function Plays(){
     const navigate = useNavigate();
 
     return (
-        <PageLayout title="Spektakle">
-            <SearchBar/>
+        <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
             {error &&
                 <div className="alert alert-danger">
                     {error.message}
@@ -27,7 +28,7 @@ function Plays(){
             {loading ? (
                 <div>Loading...</div>
             ) : (
-                <DataTable
+                <MantineDataTable
                     columns={playColumns}
                     data={plays}
                     onAdd={() => navigate('/plays/new')}
@@ -38,7 +39,7 @@ function Plays(){
                     onDeleteSelected={deleteSelectedItems}
                 />
             )}
-        </PageLayout>
+        </Box>
     );
 }
 

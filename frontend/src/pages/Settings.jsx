@@ -1,10 +1,11 @@
 import PageLayout from "../components/PageLayout.jsx";
+import {Box} from "@mantine/core";
 
 function Settings(){
     return (
-        <PageLayout title="Ustawienia">
+        <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
 
-        </PageLayout>
+        </Box>
     );
 }
 

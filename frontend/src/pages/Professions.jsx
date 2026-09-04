@@ -5,6 +5,8 @@ import {professionsApi, professionColumns} from "../api/professions.js";
 import ProfessionModal from "../components/ProfessionModal.jsx";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
+import {Box} from "@mantine/core";
+import MantineDataTable from "../components/MantineDataTable.jsx";
 
 function Professions() {
     const {
@@ -35,8 +37,7 @@ function Professions() {
     };
 
     return (
-        <PageLayout title="Zawody">
-            <SearchBar/>
+        <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
             {error &&
                 <div className="alert alert-danger">
                     {error.message}
@@ -45,7 +46,7 @@ function Professions() {
             {loading ? (
                 <div>Loading...</div>
             ) : (
-                <DataTable
+                <MantineDataTable
                     columns={professionColumns}
                     data={professions}
                     onAdd={openCreateModal}
@@ -61,7 +62,7 @@ function Professions() {
                 professionToEdit={editedProfession}
             />
 
-        </PageLayout>
+        </Box>
     );
 }
 

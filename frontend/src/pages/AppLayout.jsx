@@ -1,26 +1,45 @@
 import {Outlet} from "react-router-dom";
-import NavBar from "../components/NavBar.jsx";
-import '../css/AppLayout.css'
-import {useState} from "react";
+import MantineNavBar from "../components/MantineNavBar.jsx";
+import {AppShell, Burger, Center, Title} from "@mantine/core";
+import {useDisclosure} from "@mantine/hooks";
 
 function AppLayout(){
-    const [collapsed, setCollapsed] = useState(false);
 
-    return(
-        <div
-            className={`layout ${collapsed ? "sidebar-collapsed" : ""}`}
+    const [opened, { toggle }] = useDisclosure();
+    return (
+        <AppShell
+            layout="alt"
+            padding="md"
+            header={{ height: 60 }}
+            navbar={{
+                width: 300,
+                breakpoint: 'sm',
+                collapsed: { mobile: !opened },
+            }}
+            style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}
         >
-            <aside className="sidebar position-fixed vh-100">
-                <NavBar
-                    collapsed={collapsed}
-                    onToggle={() => setCollapsed(!collapsed)}
-                />
-            </aside>
+            <AppShell.Header>
+                <Center h="100%">
+                    <Burger
+                        opened={opened}
+                        onClick={toggle}
+                        hiddenFrom="sm"
+                        size="sm"
+                        style={{ position: 'absolute', left: 16 }}
+                    />
+                    <Title order={2}>Calendrama</Title>
+                </Center>
 
-            <main className="content p-3">
+            </AppShell.Header>
+
+            <AppShell.Navbar>
+                <MantineNavBar />
+            </AppShell.Navbar>
+
+            <AppShell.Main style={{ display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                 <Outlet />
-            </main>
-        </div>
+            </AppShell.Main>
+        </AppShell>
     );
 }
 
