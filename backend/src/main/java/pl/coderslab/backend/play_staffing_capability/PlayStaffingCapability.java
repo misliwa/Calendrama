@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import pl.coderslab.backend.employee.Employee;
 import pl.coderslab.backend.play_staffing.PlayStaffing;
 
@@ -26,10 +28,12 @@ public class PlayStaffingCapability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(optional = false)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(optional = false)
     @JoinColumn(name = "play_staffing_id", nullable = false)
     private PlayStaffing playStaffing;
