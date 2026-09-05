@@ -34,6 +34,7 @@ public class Event {
     @ManyToOne
     private Play play;
 
+    @NotNull
     private String description;
 
     @AssertTrue(message = "End date must be after start date")
