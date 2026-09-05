@@ -55,7 +55,7 @@ function Employees() {
         closeModal: closeUnavailabilityModal
     } = useCrudParentChildModal();
 
-    const [drawerOpened, { open: openDrawer, close: closeDrawer }] = useDisclosure(false);
+    const [drawerOpened, {open: openDrawer, close: closeDrawer}] = useDisclosure(false);
     const [employeeInDrawer, setEmployeeInDrawer] = useState(null);
 
     const handleSubmit = async (values) => {
@@ -80,11 +80,11 @@ function Employees() {
     };
 
     const handleUnavailabilitySubmit = async (employeeId, values) => {
-       if(editedUnavailability){
-           await updateUnavailability(employeeId, editedUnavailability.id, values);
-       }else{
-           await createUnavailability(employeeId, values);
-       }
+        if (editedUnavailability) {
+            await updateUnavailability(employeeId, editedUnavailability.id, values);
+        } else {
+            await createUnavailability(employeeId, values);
+        }
         closeUnavailabilityModal();
     }
 
@@ -145,14 +145,14 @@ function Employees() {
                     onDeleteSelected={(unavailabilityIds) => deleteSelectedUnavailabilities(employeeInDrawer.id, unavailabilityIds)}
                 />
 
-                <UnavailabilityModal
-                    opened={unavailabilityModalOpened}
-                    onClose={closeUnavailabilityModal}
-                    onSubmit={handleUnavailabilitySubmit}
-                    employee={unavailableEmployee}
-                    editedUnavailability={editedUnavailability}
-                />
             </Drawer>
+            <UnavailabilityModal
+                opened={unavailabilityModalOpened}
+                onClose={closeUnavailabilityModal}
+                onSubmit={handleUnavailabilitySubmit}
+                employee={unavailableEmployee}
+                editedUnavailability={editedUnavailability}
+            />
         </Box>
     )
 }
