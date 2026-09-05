@@ -58,11 +58,15 @@ public class ProfessionService {
         repository.delete(profession);
     }
 
+    public Profession findProfessionById(Long id) {
+        return repository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(RESOURCE_NAME, id)
+        );
+    }
+
     public Profession getOrCreate(ProfessionDTO professionDTO) {
         if (professionDTO.id() != null) {
-            return repository.findById(professionDTO.id()).orElseThrow(() ->
-                    new ResourceNotFoundException(RESOURCE_NAME, professionDTO.id())
-            );
+            return findProfessionById(professionDTO.id());
         } else {
             String name = professionDTO.name().trim();
 

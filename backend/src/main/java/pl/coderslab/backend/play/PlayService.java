@@ -113,6 +113,13 @@ public class PlayService {
         playRepository.delete(play);
     }
 
+    public Play findPlayById(Long id){
+        return playRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(RESOURCE_NAME, id)
+                );
+    }
+
     private Stage getStage(Long id) {
         return stageRepository.findById(id)
                 .orElseThrow(() ->
