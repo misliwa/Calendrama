@@ -58,7 +58,7 @@ function MantineDataTable({columns, data, onAdd, onEdit, onDelete, onDeleteSelec
                         </Menu.Item>
 
                         {additionalButtons?.map((button) => (
-                                <Menu.Item key={button.name} onClick={() => button.handleClick(row.id)}>
+                                <Menu.Item key={button.name} onClick={() => button.handleClick(row)}>
                                     {button.text}
                                 </Menu.Item>
                             )

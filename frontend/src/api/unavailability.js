@@ -1,7 +1,4 @@
-import {createBasicCrudApi} from "./basicCrud.js";
-import API_BASE_URL from "./api.js";
 import {ApiError} from "./ApiError.js";
-import {WebSocketAlias} from "vite";
 
 export const unavailabilityColumns = [
     {
@@ -23,7 +20,7 @@ export const unavailabilityColumns = [
 ];
 
 export const unavailabilityApi = () => {
-    const PARENT_URL = `employees`;
+    const PARENT_URL = "http://localhost:8080/employees";
     const CHILD_URL = 'unavailability'
 
     const create = async (employeeId, item) => {

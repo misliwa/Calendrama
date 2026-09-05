@@ -9,6 +9,10 @@ import EmployeeModal from "../components/EmployeeModal.jsx";
 import {professionsApi} from "../api/professions.js";
 import MantineDataTable from "../components/MantineDataTable.jsx";
 import {Box} from "@mantine/core";
+import AddUnavailabilityModal from "../components/AddUnavailabilityModal.jsx";
+import {unavailabilityApi} from "../api/unavailability.js";
+import {useCrudParentChildModal} from "../hooks/useCrudParentChildModal.jsx";
+import {useParentChildCrud} from "../hooks/useParentChildCrud.jsx";
 
 function Employees() {
     const {
@@ -34,6 +38,17 @@ function Employees() {
         closeModal
     } = useCrudModal();
 
+    const {
+        createItem: createUnavailability,
+    } = useParentChildCrud(unavailabilityApi());
+
+    const {
+        opened: unavailabilityModalOpened,
+        openCreateModal: openAddUnavailabilityModal,
+        itemParent: unavailableEmployee,
+        closeModal: closeUnavailabilityModal
+    } = useCrudParentChildModal();
+
     const handleSubmit = async (values) => {
         const payload = {
             ...values,
@@ -55,6 +70,19 @@ function Employees() {
         }
     };
 
+    const handleUnavailabilitySubmit = async (employeeId, values) => {
+       await createUnavailability(employeeId, values);
+       closeUnavailabilityModal();
+    }
+
+    const addUnavailabilityButton = {
+        name: "addUnavailabilityButton",
+        text: "Dodaj zajętość",
+        handleClick: (unavailableEmployee) => {
+            openAddUnavailabilityModal(unavailableEmployee);
+        }
+    }
+
     return (
         <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
             {error &&
@@ -72,6 +100,7 @@ function Employees() {
                     onEdit={openEditModal}
                     onDelete={deleteItem}
                     onDeleteSelected={deleteSelectedItems}
+                    additionalButtons={[addUnavailabilityButton]}
                 />
             )}
 
@@ -82,6 +111,13 @@ function Employees() {
                 employeeToEdit={editedEmployee}
                 professions={availableProfessions}
                 createProfession={createProfession}
+            />
+
+            <AddUnavailabilityModal
+                opened={unavailabilityModalOpened}
+                onClose={closeUnavailabilityModal}
+                onSubmit={handleUnavailabilitySubmit}
+                employee={unavailableEmployee}
             />
         </Box>
     )
