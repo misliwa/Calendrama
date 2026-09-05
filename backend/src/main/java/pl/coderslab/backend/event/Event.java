@@ -3,8 +3,7 @@ package pl.coderslab.backend.event;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import pl.coderslab.backend.play.Play;
 import pl.coderslab.backend.stage.Stage;
 
@@ -12,6 +11,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "events")
 public class Event {

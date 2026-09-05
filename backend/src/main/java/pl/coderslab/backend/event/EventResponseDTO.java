@@ -1,7 +1,7 @@
 package pl.coderslab.backend.event;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import pl.coderslab.backend.play.PlayResponseDTO;
+import pl.coderslab.backend.stage.StageDTO;
 
 import java.time.LocalDateTime;
 
@@ -14,9 +14,9 @@ public record EventResponseDTO(
 
         LocalDateTime endDateTime,
 
-        Long stageId,
+        StageDTO stage,
 
-        Long playId,
+        PlayResponseDTO play,
 
         String description
         ) {

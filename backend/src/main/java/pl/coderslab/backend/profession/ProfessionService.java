@@ -50,10 +50,7 @@ public class ProfessionService {
     }
 
     public void deleteById(Long id) {
-        Profession profession = repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(RESOURCE_NAME, id)
-                );
+        Profession profession = findProfessionById(id);
 
         repository.delete(profession);
     }

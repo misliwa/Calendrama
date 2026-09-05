@@ -29,10 +29,14 @@ public class StageService {
         return StageMapper.toDTO(stage);
     }
 
-    public StageDTO findById(Long id) {
-        Stage stage = repository.findById(id).orElseThrow(() ->
+    public Stage findStageById(Long id){
+        return repository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(RESOURCE_NAME, id)
         );
+    }
+
+    public StageDTO findById(Long id) {
+        Stage stage = findStageById(id);
 
         return StageMapper.toDTO(stage);
     }
