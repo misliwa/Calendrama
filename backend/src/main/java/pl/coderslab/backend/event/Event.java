@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Table(name = "events")
 public class Event {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)

@@ -12,16 +12,15 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/plays/{playId}/staffings")
 public class PlayStaffingController {
     private final PlayStaffingService staffingService;
 
-    @GetMapping("")
+    @GetMapping("/api/plays/{playId}/staffings")
     public ResponseEntity<List<PlayStaffingResponseDTO>> findAllByPlayId(@PathVariable("playId") Long playId){
         return ResponseEntity.ok(staffingService.findAllByPlayId(playId));
     }
 
-    @PostMapping("")
+    @PostMapping("/api/plays/{playId}/staffings")
     public ResponseEntity<PlayStaffingResponseDTO> createStaffingForPlayId(
             @PathVariable("playId") Long playId,
             @RequestBody @Valid PlayStaffingRequestDTO staffingRequestDTO
@@ -29,21 +28,19 @@ public class PlayStaffingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(staffingService.createStaffingForPlayId(playId, staffingRequestDTO));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/api/staffings/{id}")
     public ResponseEntity<PlayStaffingResponseDTO> updateById(
-            @PathVariable("playId") Long playId,
             @PathVariable("id") Long id,
             @RequestBody @Valid PlayStaffingRequestDTO staffingRequestDTO
     ){
-        return ResponseEntity.ok(staffingService.updateById(playId, id, staffingRequestDTO));
+        return ResponseEntity.ok(staffingService.updateById(id, staffingRequestDTO));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/staffings/{id}")
     public ResponseEntity<Void> deleteById(
-            @PathVariable("playId") Long playId,
             @PathVariable("id") Long id
     ){
-        unavailabilityService.deleteById(playId, id);
+        staffingService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
