@@ -1,4 +1,5 @@
 import {ApiError} from "./ApiError.js";
+import dayjs from "dayjs";
 
 export const unavailabilityColumns = [
     {
@@ -7,11 +8,11 @@ export const unavailabilityColumns = [
     },
     {
         name: "Od:",
-        getValue: unavailability => unavailability.startDateTime
+        getValue: unavailability => dayjs(unavailability.startDateTime).format("DD.MM.YYYY HH:mm")
     },
     {
         name: "Do:",
-        getValue: unavailability => unavailability.endDateTime
+        getValue: unavailability => dayjs(unavailability.endDateTime).format("DD.MM.YYYY HH:mm")
     },
     {
         name: "Opis:",
@@ -46,7 +47,7 @@ export const unavailabilityApi = () => {
     };
 
     const updateById = async (parentId, id, item) => {
-        const response = await fetch(`${PARENT_URL}/${parentId}/${CHILD_URL}${id}`,
+        const response = await fetch(`${PARENT_URL}/${parentId}/${CHILD_URL}/${id}`,
             {
                 method: "PUT",
                 headers: {

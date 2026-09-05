@@ -1,18 +1,17 @@
-import DataTable from "../components/DataTable.jsx";
-import PageLayout from "../components/PageLayout.jsx";
 import "../css/Employees.css";
-import SearchBar from "../components/SearchBar.jsx";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {employeesApi, employeeColumns} from "../api/employees.js";
 import {useCrudModal} from "../hooks/useCrudModal.jsx";
 import EmployeeModal from "../components/EmployeeModal.jsx";
 import {professionsApi} from "../api/professions.js";
 import MantineDataTable from "../components/MantineDataTable.jsx";
-import {Box} from "@mantine/core";
-import AddUnavailabilityModal from "../components/AddUnavailabilityModal.jsx";
-import {unavailabilityApi} from "../api/unavailability.js";
+import {Box, Drawer} from "@mantine/core";
+import UnavailabilityModal from "../components/UnavailabilityModal.jsx";
+import {unavailabilityApi, unavailabilityColumns} from "../api/unavailability.js";
 import {useCrudParentChildModal} from "../hooks/useCrudParentChildModal.jsx";
 import {useParentChildCrud} from "../hooks/useParentChildCrud.jsx";
+import {useDisclosure} from "@mantine/hooks";
+import {useState} from "react";
 
 function Employees() {
     const {
@@ -40,14 +39,24 @@ function Employees() {
 
     const {
         createItem: createUnavailability,
+        updateItem: updateUnavailability,
+        items: employeesUnavailabilities,
+        load: loadUnavailabilities,
+        deleteItem: deleteUnavailability,
+        deleteSelectedItems: deleteSelectedUnavailabilities,
     } = useParentChildCrud(unavailabilityApi());
 
     const {
         opened: unavailabilityModalOpened,
         openCreateModal: openAddUnavailabilityModal,
+        openEditModal: openEditUnavailabilityModal,
         itemParent: unavailableEmployee,
+        editedItem: editedUnavailability,
         closeModal: closeUnavailabilityModal
     } = useCrudParentChildModal();
+
+    const [drawerOpened, { open: openDrawer, close: closeDrawer }] = useDisclosure(false);
+    const [employeeInDrawer, setEmployeeInDrawer] = useState(null);
 
     const handleSubmit = async (values) => {
         const payload = {
@@ -71,15 +80,21 @@ function Employees() {
     };
 
     const handleUnavailabilitySubmit = async (employeeId, values) => {
-       await createUnavailability(employeeId, values);
-       closeUnavailabilityModal();
+       if(editedUnavailability){
+           await updateUnavailability(employeeId, editedUnavailability.id, values);
+       }else{
+           await createUnavailability(employeeId, values);
+       }
+        closeUnavailabilityModal();
     }
 
-    const addUnavailabilityButton = {
-        name: "addUnavailabilityButton",
-        text: "Dodaj zajętość",
-        handleClick: (unavailableEmployee) => {
-            openAddUnavailabilityModal(unavailableEmployee);
+    const openDrawerButton = {
+        name: "openDrawerButtony",
+        text: "Zajętości",
+        handleClick: (employee) => {
+            loadUnavailabilities(employee.id)
+            setEmployeeInDrawer(employee)
+            openDrawer();
         }
     }
 
@@ -100,7 +115,7 @@ function Employees() {
                     onEdit={openEditModal}
                     onDelete={deleteItem}
                     onDeleteSelected={deleteSelectedItems}
-                    additionalButtons={[addUnavailabilityButton]}
+                    additionalButtons={[openDrawerButton]}
                 />
             )}
 
@@ -113,12 +128,31 @@ function Employees() {
                 createProfession={createProfession}
             />
 
-            <AddUnavailabilityModal
-                opened={unavailabilityModalOpened}
-                onClose={closeUnavailabilityModal}
-                onSubmit={handleUnavailabilitySubmit}
-                employee={unavailableEmployee}
-            />
+            <Drawer
+                offset={8}
+                radius="md"
+                opened={drawerOpened}
+                onClose={closeDrawer}
+                size="xl"
+                title={`Zajętości ${employeeInDrawer?.firstName} ${employeeInDrawer?.lastName}`}
+            >
+                <MantineDataTable
+                    columns={unavailabilityColumns}
+                    data={employeesUnavailabilities}
+                    onAdd={() => openAddUnavailabilityModal(employeeInDrawer)}
+                    onEdit={(unavailability) => openEditUnavailabilityModal(employeeInDrawer, unavailability)}
+                    onDelete={(unavailabilityId) => deleteUnavailability(employeeInDrawer.id, unavailabilityId)}
+                    onDeleteSelected={(unavailabilityIds) => deleteSelectedUnavailabilities(employeeInDrawer.id, unavailabilityIds)}
+                />
+
+                <UnavailabilityModal
+                    opened={unavailabilityModalOpened}
+                    onClose={closeUnavailabilityModal}
+                    onSubmit={handleUnavailabilitySubmit}
+                    employee={unavailableEmployee}
+                    editedUnavailability={editedUnavailability}
+                />
+            </Drawer>
         </Box>
     )
 }

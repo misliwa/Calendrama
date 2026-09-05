@@ -111,6 +111,7 @@ export function useParentChildCrud(api) {
         items,
         error,
         loading,
+        load,
         createItem,
         updateItem,
         deleteItem,

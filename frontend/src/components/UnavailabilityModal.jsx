@@ -2,8 +2,9 @@ import {useForm} from "@mantine/form";
 import {Button, Group, Modal, TextInput} from "@mantine/core";
 import { DateTimePicker} from '@mantine/dates';
 import dayjs from "dayjs";
+import {useEffect} from "react";
 
-function AddUnavailabilityModal({opened, onClose, onSubmit, employee}) {
+function UnavailabilityModal({opened, onClose, onSubmit, employee, editedUnavailability}) {
 
     const handleSubmit = async (employeeId, values) => {
         try {
@@ -51,6 +52,22 @@ function AddUnavailabilityModal({opened, onClose, onSubmit, employee}) {
 
     });
 
+    useEffect(() => {
+        if (editedUnavailability) {
+            form.setValues({
+                startDateTime: editedUnavailability.startDateTime.replace("T", " "),
+                endDateTime: editedUnavailability.endDateTime.replace("T", " "),
+                description: editedUnavailability.description ?? ''
+            });
+        } else {
+            form.setValues({
+                startDateTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+                endDateTime: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
+                description: '',
+            });
+        }
+    }, [editedUnavailability]);
+
     const handleClose = () => {
         form.reset();
         onClose();
@@ -60,7 +77,7 @@ function AddUnavailabilityModal({opened, onClose, onSubmit, employee}) {
         <Modal
             opened={opened}
             onClose={handleClose}
-            title={`Dodaj zajętość dla ${employee?.firstName} ${employee?.lastName}`}
+            title={`${editedUnavailability ? "Dodaj" : "Edytuj"} zajętość dla ${employee?.firstName} ${employee?.lastName}`}
         >
             <form onSubmit={form.onSubmit((values => handleSubmit(employee.id, values)))}>
 
@@ -97,4 +114,4 @@ function AddUnavailabilityModal({opened, onClose, onSubmit, employee}) {
         ;
 }
 
-export default AddUnavailabilityModal
+export default UnavailabilityModal

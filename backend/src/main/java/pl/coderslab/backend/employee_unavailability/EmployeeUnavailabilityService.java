@@ -39,7 +39,10 @@ public class EmployeeUnavailabilityService {
 
         EmployeeUnavailabilityMapper.updateEntity(unavailability, requestDTO);
 
-        return EmployeeUnavailabilityMapper.toDTO(unavailability);
+        EmployeeUnavailability savedUnavailability =
+                unavailabilityRepository.save(unavailability);
+
+        return EmployeeUnavailabilityMapper.toDTO(savedUnavailability);
     }
 
     public void deleteById(Long employeeId, Long id) {
