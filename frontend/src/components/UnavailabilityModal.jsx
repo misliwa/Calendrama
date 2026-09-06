@@ -83,7 +83,7 @@ function UnavailabilityModal({opened, onClose, onSubmit, employee, editedUnavail
 
                <DateTimePicker
                     withAsterisk
-                    label="Czas rozpoiczęcia"
+                    label="Czas rozpoczęcia"
                     placeholder="Wybierz datę"
                     key={form.key('startDateTime')}
                     {...form.getInputProps('startDateTime')}

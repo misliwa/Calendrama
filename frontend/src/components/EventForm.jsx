@@ -1,34 +1,78 @@
-import {Box, Button, Group, Modal, TextInput} from "@mantine/core";
+import {Box, Button, Group, Select, Stack, TextInput} from "@mantine/core";
 import {useForm} from "@mantine/form";
 import {useEffect} from "react";
+import {DateTimePicker} from "@mantine/dates";
+import dayjs from "dayjs";
 
-function EventForm({opened, onClose, onSubmit, professionToEdit}) {
+function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
+
+    const stageOptions = stages.map(stage => ({
+        value: String(stage.id),
+        label: stage.name,
+    }));
+
+    const playOptions = plays.map(play => ({
+        value: String(play.id),
+        label: `id. ${play.id}. ${play.title}`,
+    }));
+
+
     const form = useForm({
         mode: 'uncontrolled',
         initialValues: {
-            name: '',
+            stageId: stages[0].value ?? '',
+            playId: '',
+            type: '',
+            startDateTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+            endDateTime: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
+            description: '',
         },
 
         validate: {
-            name: (value) =>
-                value.trim().length < 2
-                    ? "Nazwa musi mieć co najmniej 2 znaki"
+            stageId: (value) =>
+                !value
+                    ? "Scena jest wymagana"
                     : null,
+            type: (value) =>
+                !value
+                    ? "Typ jest wymagany"
+                    : null,
+            startDateTime: value =>
+                !value ? "Data rozpoczęcia jest wymagana" : null,
+
+            endDateTime: (value, values) => {
+                if (!value) {
+                    return "Data zakończenia jest wymagana";
+                }
+
+                return new Date(value.replace(" ", "T")) <=
+                new Date(values.startDateTime.replace(" ", "T"))
+                    ? "Data zakończenia musi być późniejsza niż data rozpoczęcia"
+                    : null;
+            },
         },
     });
 
     useEffect(() => {
-        if (professionToEdit) {
+        if (eventToEdit) {
             form.setValues({
-                name: professionToEdit.name,
+                stageId: eventToEdit.stage.id,
+                playId: eventToEdit.play?.id ?? '',
+                startDateTime: eventToEdit.startDateTime.replace("T", " "),
+                endDateTime: eventToEdit.endDateTime.replace("T", " "),
+                description: eventToEdit.description ?? ''
             });
         } else {
             form.setValues({
-                name: '',
+                stageId: stages[0] ?? '',
+                playId: plays[0] ?? '',
+                type: 'PERFORMANCE',
+                startDateTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+                endDateTime: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
+                description: '',
             });
         }
-    }, [professionToEdit]);
-
+    }, [eventToEdit]);
 
 
     const handleClose = () => {
@@ -42,17 +86,66 @@ function EventForm({opened, onClose, onSubmit, professionToEdit}) {
                 await onSubmit(values);
                 handleClose();
             })}>
-                <TextInput
-                    withAsterisk
-                    label="Nazwa"
-                    placeholder="Nazwa zawodu"
-                    key={form.key('name')}
-                    {...form.getInputProps('name')}
-                />
+                <Stack gap="md">
+                    <Select
+                        label="Scena"
+                        placeholder="Scena"
+                        searchable
+                        data={stageOptions}
+                        key={form.key('stageId')}
+                        {...form.getInputProps('stageId')}
+                    />
 
-                <Group justify="flex-end" mt="md">
-                    <Button type="submit">Zapisz</Button>
-                </Group>
+                    <Select
+                        label="Spektakl"
+                        placeholder="Spektakl"
+                        clearable
+                        searchable
+                        data={playOptions}
+                        key={form.key('playId')}
+                        {...form.getInputProps('playId')}
+                    />
+
+                    <Select
+                        label="Typ wydarzenia"
+                        placeholder="Typ wydarzenia"
+                        data={[
+                            {value: 'PERFORMANCE', label: 'Spektakl'},
+                            {value: 'REHEARSAL', label: 'Próba'},
+                            {value: 'EXTERNAL', label: 'Wydarzenie zewnętrzne'},
+                            {value: 'MAINTENANCE', label: 'Prace na scenie'}
+                        ]}
+                        key={form.key('type')}
+                        {...form.getInputProps('type')}
+                    />
+
+                    <DateTimePicker
+                        withAsterisk
+                        label="Czas rozpoczęcia"
+                        placeholder="Wybierz datę"
+                        key={form.key('startDateTime')}
+                        {...form.getInputProps('startDateTime')}
+                    />
+
+                    <DateTimePicker
+                        withAsterisk
+                        label="Czas zakończenia"
+                        placeholder="Wybierz datę"
+                        key={form.key('endDateTime')}
+                        {...form.getInputProps('endDateTime')}
+                    />
+
+                    <TextInput
+                        label="Opis"
+                        placeholder="Opis"
+                        key={form.key('description')}
+                        {...form.getInputProps('description')}
+                    />
+
+                    <Group justify="flex-end" mt="md">
+                        <Button type="submit">Zapisz</Button>
+                    </Group>
+                </Stack>
             </form>
         </Box>
     );
