@@ -58,6 +58,7 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
             form.setValues({
                 stageId: eventToEdit.stage.id,
                 playId: eventToEdit.play?.id ?? '',
+                type: eventToEdit.type,
                 startDateTime: eventToEdit.startDateTime.replace("T", " "),
                 endDateTime: eventToEdit.endDateTime.replace("T", " "),
                 description: eventToEdit.description ?? ''

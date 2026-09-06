@@ -31,11 +31,35 @@ function Calendar({handleEventClick}) {
             events={[
                 {
                     title: 'Hamlet',
-                    date: '2026-09-15'
+                    start: '2026-09-15T19:00:00',
+                    end: '2026-09-15T22:00:00',
+
+                    startDateTime: '2026-09-15T19:00:00',
+                    endDateTime: '2026-09-15T22:00:00',
+                    description: 'Premiera spektaklu Hamlet',
+                    type: 'PERFORMANCE',
+                    stage: {
+                        id: '1'
+                    },
+                    play: {
+                        id: '1'
+                    }
                 },
                 {
                     title: 'Makbet',
-                    date: '2026-09-20'
+                    start: '2026-09-20T18:00:00',
+                    end: '2026-09-20T20:30:00',
+
+                    startDateTime: '2026-09-20T18:00:00',
+                    endDateTime: '2026-09-20T20:30:00',
+                    description: 'Spektakl Makbet',
+                    type: 'PERFORMANCE',
+                    stage: {
+                        id: '2'
+                    },
+                    play: {
+                        id: '3'
+                    }
                 }
             ]}
         />

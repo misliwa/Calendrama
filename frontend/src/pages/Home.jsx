@@ -26,7 +26,12 @@ function Home() {
     }
 
     const handleEventClick = (info) => {
-        setEventInDrawer(info.event);
+
+        const eventData = {
+            title: info.event.title,
+            ...info.event.extendedProps
+        };
+        setEventInDrawer(eventData);
         openDrawer();
     }
 
