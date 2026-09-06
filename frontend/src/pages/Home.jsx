@@ -47,7 +47,7 @@ function Home() {
                 opened={drawerOpened}
                 onClose={closeDrawer}
                 size="xl"
-                title={`Wydarzenie ${eventInDrawer?.title ?? ''}`}
+                title={`${eventInDrawer ? 'Edytuj' : 'Nowe'} wydarzenie ${eventInDrawer?.title ?? ''}`}
             >
                 <EventForm
                     stages={stages}
