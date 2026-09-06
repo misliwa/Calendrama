@@ -144,6 +144,10 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
                     />
 
                     <Group justify="flex-end" mt="md">
+                        {eventToEdit ? (
+                            <Button type="button" color="red">Usuń</Button>
+                        ) : null}
+
                         <Button type="submit">Zapisz</Button>
                     </Group>
                 </Stack>
