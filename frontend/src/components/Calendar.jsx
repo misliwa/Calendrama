@@ -6,17 +6,22 @@ import themePlugin from '@fullcalendar/react/themes/monarch';
 import '@fullcalendar/react/skeleton.css';
 import '@fullcalendar/react/themes/monarch/theme.css';
 import '@fullcalendar/react/themes/monarch/palettes/purple.css';
+import plLocale from '@fullcalendar/react/locales/pl';
 
-function Calendar() {
+function Calendar({handleEventClick}) {
     return (
         <FullCalendar
+            height={700}
+            contentHeight={450}
+            eventClick={handleEventClick}
+            locale={plLocale}
             plugins={[
                 themePlugin,
                 dayGridPlugin,
                 timeGridPlugin,
                 interactionPlugin
             ]}
-            themeSystem="bootstrap5"
+
             initialView="dayGridMonth"
             headerToolbar={{
                 left: 'prev,next today',
@@ -26,11 +31,11 @@ function Calendar() {
             events={[
                 {
                     title: 'Hamlet',
-                    date: '2026-08-15'
+                    date: '2026-09-15'
                 },
                 {
                     title: 'Makbet',
-                    date: '2026-08-20'
+                    date: '2026-09-20'
                 }
             ]}
         />

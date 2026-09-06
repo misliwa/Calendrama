@@ -2,10 +2,14 @@ import {Outlet} from "react-router-dom";
 import MantineNavBar from "../components/MantineNavBar.jsx";
 import {AppShell, Burger, Center, Title} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
+import {useEffect} from "react";
 
 function AppLayout(){
 
     const [opened, { toggle }] = useDisclosure();
+    useEffect(() => {
+        document.title = 'Calendrama';
+    }, []);
     return (
         <AppShell
             layout="alt"

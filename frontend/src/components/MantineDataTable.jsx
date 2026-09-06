@@ -43,7 +43,7 @@ function MantineDataTable({columns, data, onAdd, onEdit, onDelete, onDeleteSelec
             <Table.Td className="text-end">
                 <Menu>
                     <Menu.Target>
-                        <ActionIcon>
+                        <ActionIcon variant="subtle">
                             <IconDots size={16}/>
                         </ActionIcon>
                     </Menu.Target>
