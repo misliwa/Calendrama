@@ -1,12 +1,13 @@
 import Calendar from "../components/Calendar.jsx";
-import PageLayout from "../components/PageLayout.jsx";
-import {Box, Button, Drawer, Group, ScrollArea, Space} from "@mantine/core";
+import {Box, Button, Drawer, Group, Space} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import {useState} from "react";
 import EventForm from "../components/EventForm.jsx";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {stagesApi} from "../api/stages.js";
 import {playsApi} from "../api/plays.js";
+import {eventsApi} from "../api/events.js";
+import dayjs from "dayjs";
 
 function Home() {
     const [drawerOpened, {open: openDrawer, close: closeDrawer}] = useDisclosure(false);
@@ -20,25 +21,65 @@ function Home() {
         items: plays
     } = useCrud(playsApi);
 
+    const {
+        items: events,
+        createItem: createEvent,
+        updateItem: updateEvent,
+        getItemById: getEventById
+    } = useCrud(eventsApi);
+
     const handleAddClick = () => {
         setEventInDrawer(null);
         openDrawer();
     }
 
     const handleEventClick = (info) => {
+        const startText = info.event.start ? dayjs(info.event.start).format('YYYY-MM-DD HH:mm:ss') : '';
+        const endText = info.event.end ? dayjs(info.event.end).format('YYYY-MM-DD HH:mm:ss') : '';
 
         const eventData = {
+            id: info.event.id,
             title: info.event.title,
-            ...info.event.extendedProps
+            ...info.event.extendedProps,
+            start: startText,
+            end: endText
         };
+
         setEventInDrawer(eventData);
         openDrawer();
-    }
+    };
+
+
+
+    const handleSubmit = async (values) => {
+        const payload = {
+            ...values,
+            stageId: Number(values.stageId),
+            playId: Number(values.playId),
+            start: values.start.replace(" ", "T"),
+            end: values.end.replace(" ", "T")
+        };
+
+        try {
+            if (eventInDrawer) {
+                console.log(payload);
+                await updateEvent(eventInDrawer.id, payload);
+                closeDrawer();
+            } else {
+                console.log(payload);
+                await createEvent(payload);
+                closeDrawer();
+            }
+        } catch (error) {
+            console.error('Nie udało się zapisać spektaklu:', error);
+        }
+    };
 
     return (
         <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
             <Calendar
                 handleEventClick={handleEventClick}
+                events={events}
             />
 
             <Space h="md"/>
@@ -58,6 +99,7 @@ function Home() {
                     stages={stages}
                     eventToEdit={eventInDrawer}
                     plays={plays}
+                    onSubmit={handleSubmit}
                 />
             </Drawer>
         </Box>

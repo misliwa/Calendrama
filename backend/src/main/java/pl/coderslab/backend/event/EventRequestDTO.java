@@ -1,15 +1,10 @@
 package pl.coderslab.backend.event;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.NumberFormat;
-import pl.coderslab.backend.play.Play;
-import pl.coderslab.backend.stage.Stage;
 
 import java.time.LocalDateTime;
 
@@ -21,10 +16,10 @@ public record EventRequestDTO(
         String title,
 
         @NotNull
-        LocalDateTime startDateTime,
+        LocalDateTime start,
 
         @NotNull
-        LocalDateTime endDateTime,
+        LocalDateTime end,
 
         @NotNull
         @NumberFormat
@@ -39,10 +34,10 @@ public record EventRequestDTO(
         ) {
         @AssertTrue(message = "End date must be after start date")
         public boolean isDateRangeValid() {
-                if (startDateTime == null || endDateTime == null) {
+                if (start == null || end == null) {
                         return true;
                 }
 
-                return endDateTime.isAfter(startDateTime);
+                return end.isAfter(start);
         }
 }

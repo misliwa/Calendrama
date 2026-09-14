@@ -8,7 +8,7 @@ import '@fullcalendar/react/themes/monarch/theme.css';
 import '@fullcalendar/react/themes/monarch/palettes/purple.css';
 import plLocale from '@fullcalendar/react/locales/pl';
 
-function Calendar({handleEventClick}) {
+function Calendar({handleEventClick, events}) {
     return (
         <FullCalendar
             height={700}
@@ -28,40 +28,7 @@ function Calendar({handleEventClick}) {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             }}
-            events={[
-                {
-                    title: 'Hamlet',
-                    start: '2026-09-15T19:00:00',
-                    end: '2026-09-15T22:00:00',
-
-                    startDateTime: '2026-09-15T19:00:00',
-                    endDateTime: '2026-09-15T22:00:00',
-                    description: 'Premiera spektaklu Hamlet',
-                    type: 'PERFORMANCE',
-                    stage: {
-                        id: '1'
-                    },
-                    play: {
-                        id: '1'
-                    }
-                },
-                {
-                    title: 'Makbet',
-                    start: '2026-09-20T18:00:00',
-                    end: '2026-09-20T20:30:00',
-
-                    startDateTime: '2026-09-20T18:00:00',
-                    endDateTime: '2026-09-20T20:30:00',
-                    description: 'Spektakl Makbet',
-                    type: 'PERFORMANCE',
-                    stage: {
-                        id: '2'
-                    },
-                    play: {
-                        id: '3'
-                    }
-                }
-            ]}
+            events={events}
         />
     );
 }

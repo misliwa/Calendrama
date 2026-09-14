@@ -12,9 +12,9 @@ public record EventResponseDTO(
 
         String title,
 
-        LocalDateTime startDateTime,
+        LocalDateTime start,
 
-        LocalDateTime endDateTime,
+        LocalDateTime end,
 
         StageDTO stage,
 

@@ -4,7 +4,7 @@ import {useEffect} from "react";
 import {DateTimePicker} from "@mantine/dates";
 import dayjs from "dayjs";
 
-function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
+function EventForm({onSubmit, eventToEdit, stages, plays}) {
 
     const stageOptions = stages.map(stage => ({
         value: String(stage.id),
@@ -24,8 +24,8 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
             stageId: stages[0].value ?? '',
             playId: '',
             type: '',
-            startDateTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-            endDateTime: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
+            start: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+            end: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
             description: '',
         },
 
@@ -42,16 +42,16 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
                 !value
                     ? "Typ jest wymagany"
                     : null,
-            startDateTime: value =>
+            start: value =>
                 !value ? "Data rozpoczęcia jest wymagana" : null,
 
-            endDateTime: (value, values) => {
+            end: (value, values) => {
                 if (!value) {
                     return "Data zakończenia jest wymagana";
                 }
 
                 return new Date(value.replace(" ", "T")) <=
-                new Date(values.startDateTime.replace(" ", "T"))
+                new Date(values.start.replace(" ", "T"))
                     ? "Data zakończenia musi być późniejsza niż data rozpoczęcia"
                     : null;
             },
@@ -65,8 +65,8 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
                 stageId: eventToEdit.stage.id,
                 playId: eventToEdit.play?.id ?? '',
                 type: eventToEdit.type,
-                startDateTime: eventToEdit.startDateTime.replace("T", " "),
-                endDateTime: eventToEdit.endDateTime.replace("T", " "),
+                start: eventToEdit.start.replace("T", " "),
+                end: eventToEdit.end.replace("T", " "),
                 description: eventToEdit.description ?? ''
             });
         } else {
@@ -75,25 +75,17 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
                 stageId: stages[0] ?? '',
                 playId: plays[0] ?? '',
                 type: 'PERFORMANCE',
-                startDateTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-                endDateTime: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
+                start: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+                end: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
                 description: '',
             });
         }
     }, [eventToEdit]);
 
 
-    const handleClose = () => {
-        form.reset();
-        onClose();
-    }
-
     return (
         <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
-            <form onSubmit={form.onSubmit(async (values) => {
-                await onSubmit(values);
-                handleClose();
-            })}>
+            <form onSubmit={form.onSubmit(onSubmit)}>
                 <Stack gap="md">
                     <TextInput
                         label="Tytuł"
@@ -138,16 +130,16 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
                         withAsterisk
                         label="Czas rozpoczęcia"
                         placeholder="Wybierz datę"
-                        key={form.key('startDateTime')}
-                        {...form.getInputProps('startDateTime')}
+                        key={form.key('start')}
+                        {...form.getInputProps('start')}
                     />
 
                     <DateTimePicker
                         withAsterisk
                         label="Czas zakończenia"
                         placeholder="Wybierz datę"
-                        key={form.key('endDateTime')}cxds
-                        {...form.getInputProps('endDateTime')}
+                        key={form.key('end')}
+                        {...form.getInputProps('end')}
                     />
 
                     <TextInput
@@ -162,7 +154,7 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
                             <Button type="button" color="red">Usuń</Button>
                         ) : null}
 
-                        <Button type="submit">Zapisz</Button>
+                        <Button type="submit" onSubmit={onSubmit}>Zapisz</Button>
                     </Group>
                 </Stack>
             </form>

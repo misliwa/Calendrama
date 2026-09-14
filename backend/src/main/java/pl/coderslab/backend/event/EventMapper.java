@@ -11,8 +11,8 @@ public class EventMapper {
                 event.getId(),
                 event.getType(),
                 event.getTitle(),
-                event.getStartDateTime(),
-                event.getEndDateTime(),
+                event.getStart(),
+                event.getEnd(),
                 StageMapper.toDTO(event.getStage()),
                 PlayMapper.toDTO(event.getPlay()),
                 event.getDescription()
@@ -22,8 +22,8 @@ public class EventMapper {
     public static Event toEntity(EventRequestDTO requestDTO, Play play, Stage stage){
         return Event.builder()
                 .title(requestDTO.title())
-                .startDateTime(requestDTO.startDateTime())
-                .endDateTime(requestDTO.endDateTime())
+                .start(requestDTO.start())
+                .end(requestDTO.end())
                 .play(play)
                 .stage(stage)
                 .description(requestDTO.description())
@@ -33,8 +33,8 @@ public class EventMapper {
 
     public static void updateEntity(Event event, EventRequestDTO requestDTO, Stage stage, Play play) {
         event.setTitle(requestDTO.title());
-        event.setStartDateTime(requestDTO.startDateTime());
-        event.setEndDateTime(requestDTO.endDateTime());
+        event.setStart(requestDTO.start());
+        event.setEnd(requestDTO.end());
         event.setType(requestDTO.type());
         event.setDescription(requestDTO.description());
         event.setPlay(play);

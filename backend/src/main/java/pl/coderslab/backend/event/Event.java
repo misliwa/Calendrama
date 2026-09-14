@@ -31,10 +31,10 @@ public class Event {
     private EventType type;
 
     @NotNull
-    private LocalDateTime startDateTime;
+    private LocalDateTime start;
 
     @NotNull
-    private LocalDateTime endDateTime;
+    private LocalDateTime end;
 
     @ManyToOne
     private Stage stage;
@@ -47,10 +47,10 @@ public class Event {
 
     @AssertTrue(message = "End date must be after start date")
     public boolean isDateRangeValid() {
-        if (startDateTime == null || endDateTime == null) {
+        if (start == null || end == null) {
             return true;
         }
 
-        return endDateTime.isAfter(startDateTime);
+        return end.isAfter(start);
     }
 }
