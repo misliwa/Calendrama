@@ -60,11 +60,9 @@ function Home() {
 
         try {
             if (eventInDrawer) {
-                console.log(payload);
                 await updateEvent(eventInDrawer.id, payload);
                 closeDrawer();
             } else {
-                console.log(payload);
                 await createEvent(payload);
                 closeDrawer();
             }
@@ -74,7 +72,11 @@ function Home() {
     };
 
     const handleEventDelete = async (eventId) => {
-        await deleteEvent(eventId)
+        try{
+            await deleteEvent(eventId);
+        }catch (error){
+            console.error('Nie udało się usunąć spektaklu:', error);
+        }
         closeDrawer();
     }
 
