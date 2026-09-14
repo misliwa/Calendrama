@@ -25,7 +25,7 @@ function Home() {
         items: events,
         createItem: createEvent,
         updateItem: updateEvent,
-        getItemById: getEventById
+        deleteItem: deleteEvent,
     } = useCrud(eventsApi);
 
     const handleAddClick = () => {
@@ -38,7 +38,7 @@ function Home() {
         const endText = info.event.end ? dayjs(info.event.end).format('YYYY-MM-DD HH:mm:ss') : '';
 
         const eventData = {
-            id: info.event.id,
+            id: Number(info.event.id),
             title: info.event.title,
             ...info.event.extendedProps,
             start: startText,
@@ -48,8 +48,6 @@ function Home() {
         setEventInDrawer(eventData);
         openDrawer();
     };
-
-
 
     const handleSubmit = async (values) => {
         const payload = {
@@ -74,6 +72,11 @@ function Home() {
             console.error('Nie udało się zapisać spektaklu:', error);
         }
     };
+
+    const handleEventDelete = async (eventId) => {
+        await deleteEvent(eventId)
+        closeDrawer();
+    }
 
     return (
         <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
@@ -100,6 +103,7 @@ function Home() {
                     eventToEdit={eventInDrawer}
                     plays={plays}
                     onSubmit={handleSubmit}
+                    onDelete={handleEventDelete}
                 />
             </Drawer>
         </Box>

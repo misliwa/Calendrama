@@ -4,7 +4,7 @@ import {useEffect} from "react";
 import {DateTimePicker} from "@mantine/dates";
 import dayjs from "dayjs";
 
-function EventForm({onSubmit, eventToEdit, stages, plays}) {
+function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
 
     const stageOptions = stages.map(stage => ({
         value: String(stage.id),
@@ -151,7 +151,7 @@ function EventForm({onSubmit, eventToEdit, stages, plays}) {
 
                     <Group justify="flex-end" mt="md">
                         {eventToEdit ? (
-                            <Button type="button" color="red">Usuń</Button>
+                            <Button type="button" color="red" onClick={() => onDelete(eventToEdit.id)}>Usuń</Button>
                         ) : null}
 
                         <Button type="submit" onSubmit={onSubmit}>Zapisz</Button>
