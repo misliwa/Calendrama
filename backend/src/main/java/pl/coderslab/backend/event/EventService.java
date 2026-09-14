@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
 import pl.coderslab.backend.play.Play;
 import pl.coderslab.backend.play.PlayService;
-import pl.coderslab.backend.profession.Profession;
-import pl.coderslab.backend.profession.ProfessionMapper;
 import pl.coderslab.backend.stage.Stage;
 import pl.coderslab.backend.stage.StageService;
 

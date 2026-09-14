@@ -4,7 +4,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.NumberFormat;
 import pl.coderslab.backend.play.Play;
 import pl.coderslab.backend.stage.Stage;
@@ -13,6 +15,10 @@ import java.time.LocalDateTime;
 
 public record EventRequestDTO(
         EventType type,
+
+        @NotBlank
+        @Size(min = 3, max = 50)
+        String title,
 
         @NotNull
         LocalDateTime startDateTime,

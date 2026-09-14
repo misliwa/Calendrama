@@ -20,6 +20,7 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
     const form = useForm({
         mode: 'uncontrolled',
         initialValues: {
+            title: '',
             stageId: stages[0].value ?? '',
             playId: '',
             type: '',
@@ -29,6 +30,10 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
         },
 
         validate: {
+            title: (value) =>
+                value.trim().length < 3 || value.trim().length > 50
+                    ? "Tytuł musi mieć co najmniej 3 i mniej niż 50 znaków"
+                    : null,
             stageId: (value) =>
                 !value
                     ? "Scena jest wymagana"
@@ -56,6 +61,7 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
     useEffect(() => {
         if (eventToEdit) {
             form.setValues({
+                title: eventToEdit.title,
                 stageId: eventToEdit.stage.id,
                 playId: eventToEdit.play?.id ?? '',
                 type: eventToEdit.type,
@@ -65,6 +71,7 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
             });
         } else {
             form.setValues({
+                title: '',
                 stageId: stages[0] ?? '',
                 playId: plays[0] ?? '',
                 type: 'PERFORMANCE',
@@ -88,6 +95,13 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
                 handleClose();
             })}>
                 <Stack gap="md">
+                    <TextInput
+                        label="Tytuł"
+                        placeholder="Tytuł wydarzenia"
+                        key={form.key('title')}
+                        {...form.getInputProps('title')}
+                    />
+
                     <Select
                         label="Scena"
                         placeholder="Scena"
@@ -132,7 +146,7 @@ function EventForm({opened, onClose, onSubmit, eventToEdit, stages, plays}) {
                         withAsterisk
                         label="Czas zakończenia"
                         placeholder="Wybierz datę"
-                        key={form.key('endDateTime')}
+                        key={form.key('endDateTime')}cxds
                         {...form.getInputProps('endDateTime')}
                     />
 

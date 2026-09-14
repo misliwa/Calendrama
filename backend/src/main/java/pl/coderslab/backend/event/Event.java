@@ -2,7 +2,9 @@ package pl.coderslab.backend.event;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import pl.coderslab.backend.play.Play;
 import pl.coderslab.backend.stage.Stage;
@@ -20,6 +22,10 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank
+    @Size(min = 3, max = 50)
+    private String title;
 
     @Enumerated(EnumType.STRING)
     private EventType type;

@@ -10,6 +10,8 @@ public record EventResponseDTO(
 
         EventType type,
 
+        String title,
+
         LocalDateTime startDateTime,
 
         LocalDateTime endDateTime,
