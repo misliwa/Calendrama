@@ -21,7 +21,7 @@ export function useCrudModal() {
     };
 
     return {
-        opened,
+        opened: opened,
         editedItem,
         openCreateModal,
         openEditModal,

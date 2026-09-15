@@ -1,8 +1,13 @@
 import {Box, Button, Group, Select, Stack, TextInput} from "@mantine/core";
 import {useForm} from "@mantine/form";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {DateTimePicker} from "@mantine/dates";
 import dayjs from "dayjs";
+import {useCrudModal} from "../hooks/useCrudModal.jsx";
+import EventAssignmentsModal from "./EventAssignmentsModal.jsx";
+import {playStaffingsApi} from "../api/playStaffing.js";
+import {useCrud} from "../hooks/useCrud.jsx";
+import {employeesApi} from "../api/employees.js";
 
 function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
 
@@ -16,6 +21,11 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
         label: `id. ${play.id}. ${play.title}`,
     }));
 
+    const {
+        items: employees
+    } = useCrud(employeesApi);
+
+    const [staffingData, setStaffingData] = useState([]);
 
     const form = useForm({
         mode: 'controlled',
@@ -78,8 +88,8 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
         } else {
             form.setValues({
                 title: '',
-                stageId: stages[0] ?? '',
-                playId: plays[0] ?? '',
+                stageId: stages[0].value ?? '',
+                playId: plays[0].value ?? '',
                 type: 'PERFORMANCE',
                 start: dayjs().format('YYYY-MM-DD HH:mm:ss'),
                 end: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
@@ -112,7 +122,37 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
         form.setFieldValue('title', `${selectedPlay.title} - ${suffix}`);
 
     }, [currentType, currentPlayId, plays]);
-    
+
+
+    useEffect(() => {
+        if (!currentPlayId) {
+            return;
+        }
+        const loadStaffings = async () => {
+            const staffings = await playStaffingsApi.findAllById(currentPlayId);
+            setStaffingData(
+                staffings.map(staffing => ({
+                    ...staffing,
+                    clientId: crypto.randomUUID(),
+                    capabilities: staffing.capabilities ? staffing.capabilities.map(capability => ({
+                        ...capability,
+                        clientId: crypto.randomUUID()
+                    })) : []
+                }))
+            );
+        };
+        loadStaffings();
+
+    }, [currentPlayId]);
+
+    const {
+        opened: assignmentModalOpened,
+        editedItem: editedPlay,
+        openCreateModal: openCreateAssignmentModal,
+        openEditModal: openEditAssignmentModal,
+        closeModal: closeAssignmentModal
+    } = useCrudModal();
+
     return (
         <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
             <form onSubmit={form.onSubmit(onSubmit)}>
@@ -174,7 +214,17 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                         {...form.getInputProps('description')}
                     />
 
+                    <EventAssignmentsModal
+                        opened={assignmentModalOpened}
+                        onClose={closeAssignmentModal}
+                        staffingData={staffingData}
+                    />
+
                     <Group justify="flex-end" mt="md">
+                        {currentPlayId ? (
+                            <Button type="button" color="green" onClick={openCreateAssignmentModal}>Pracownicy</Button>
+                        ) : null}
+
                         {eventToEdit ? (
                             <Button type="button" color="red" onClick={() => onDelete(eventToEdit.id)}>Usuń</Button>
                         ) : null}
