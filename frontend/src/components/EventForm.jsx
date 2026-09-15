@@ -18,7 +18,7 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
 
 
     const form = useForm({
-        mode: 'uncontrolled',
+        mode: 'controlled',
         initialValues: {
             title: '',
             stageId: stages[0].value ?? '',
@@ -27,6 +27,12 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
             start: dayjs().format('YYYY-MM-DD HH:mm:ss'),
             end: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
             description: '',
+        },
+
+        onValuesChange: (values) => {
+            if (!['PERFORMANCE', 'REHEARSAL'].includes(values.type)) {
+                form.setFieldValue('playId', '');
+            }
         },
 
         validate: {
@@ -82,37 +88,35 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
         }
     }, [eventToEdit]);
 
+    const currentPlayId = form.values.playId;
+    const currentType = form.values.type;
 
+    useEffect(() => {
+        if (currentType && !['PERFORMANCE', 'REHEARSAL'].includes(currentType)) {
+            form.setFieldValue('playId', '');
+            form.setFieldValue('title', '');
+            return;
+        }
+
+        if (!currentPlayId) return;
+
+        const selectedPlay = plays.find(play => String(play.id) === String(currentPlayId));
+        if (!selectedPlay) return;
+
+        const associatedStageId = selectedPlay?.stageId || selectedPlay?.stage?.id;
+        if (associatedStageId) {
+            form.setFieldValue('stageId', String(associatedStageId));
+        }
+
+        const suffix = currentType === 'PERFORMANCE' ? 'Spektakl' : 'Próba';
+        form.setFieldValue('title', `${selectedPlay.title} - ${suffix}`);
+
+    }, [currentType, currentPlayId, plays]);
+    
     return (
         <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
             <form onSubmit={form.onSubmit(onSubmit)}>
                 <Stack gap="md">
-                    <TextInput
-                        label="Tytuł"
-                        placeholder="Tytuł wydarzenia"
-                        key={form.key('title')}
-                        {...form.getInputProps('title')}
-                    />
-
-                    <Select
-                        label="Scena"
-                        placeholder="Scena"
-                        searchable
-                        data={stageOptions}
-                        key={form.key('stageId')}
-                        {...form.getInputProps('stageId')}
-                    />
-
-                    <Select
-                        label="Spektakl"
-                        placeholder="Spektakl"
-                        clearable
-                        searchable
-                        data={playOptions}
-                        key={form.key('playId')}
-                        {...form.getInputProps('playId')}
-                    />
-
                     <Select
                         label="Typ wydarzenia"
                         placeholder="Typ wydarzenia"
@@ -122,15 +126,38 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                             {value: 'EXTERNAL', label: 'Wydarzenie zewnętrzne'},
                             {value: 'MAINTENANCE', label: 'Prace na scenie'}
                         ]}
-                        key={form.key('type')}
                         {...form.getInputProps('type')}
+                    />
+
+                    {['PERFORMANCE', 'REHEARSAL'].includes(form.values.type) && (
+                        <Select
+                            label="Spektakl"
+                            placeholder="Spektakl"
+                            clearable
+                            searchable
+                            data={playOptions}
+                            {...form.getInputProps('playId')}
+                        />
+                    )}
+
+                    <TextInput
+                        label="Tytuł"
+                        placeholder="Tytuł wydarzenia"
+                        {...form.getInputProps('title')}
+                    />
+
+                    <Select
+                        label="Scena"
+                        placeholder="Scena"
+                        searchable
+                        data={stageOptions}
+                        {...form.getInputProps('stageId')}
                     />
 
                     <DateTimePicker
                         withAsterisk
                         label="Czas rozpoczęcia"
                         placeholder="Wybierz datę"
-                        key={form.key('start')}
                         {...form.getInputProps('start')}
                     />
 
@@ -138,14 +165,12 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                         withAsterisk
                         label="Czas zakończenia"
                         placeholder="Wybierz datę"
-                        key={form.key('end')}
                         {...form.getInputProps('end')}
                     />
 
                     <TextInput
                         label="Opis"
                         placeholder="Opis"
-                        key={form.key('description')}
                         {...form.getInputProps('description')}
                     />
 
@@ -154,7 +179,7 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                             <Button type="button" color="red" onClick={() => onDelete(eventToEdit.id)}>Usuń</Button>
                         ) : null}
 
-                        <Button type="submit" onSubmit={onSubmit}>Zapisz</Button>
+                        <Button type="submit">Zapisz</Button>
                     </Group>
                 </Stack>
             </form>
