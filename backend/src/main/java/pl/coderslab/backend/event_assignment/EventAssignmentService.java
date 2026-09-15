@@ -3,9 +3,6 @@ package pl.coderslab.backend.event_assignment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
-import pl.coderslab.backend.play_staffing.PlayStaffing;
-import pl.coderslab.backend.play_staffing.PlayStaffingMapper;
-import pl.coderslab.backend.play_staffing.PlayStaffingResponseDTO;
 
 import java.util.List;
 

@@ -6,7 +6,7 @@ import pl.coderslab.backend.event.EventMapper;
 import pl.coderslab.backend.play_staffing.PlayStaffingMapper;
 
 public class EventAssignmentMapper {
-    public EventAssignmentResponseDTO toDTO(EventAssignment eventAssignment){
+    public static EventAssignmentResponseDTO toDTO(EventAssignment eventAssignment){
         return new EventAssignmentResponseDTO(
                 eventAssignment.getId(),
                 EventMapper.toDTO(eventAssignment.getEvent()),

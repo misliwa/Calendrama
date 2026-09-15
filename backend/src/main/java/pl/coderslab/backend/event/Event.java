@@ -6,10 +6,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import pl.coderslab.backend.event_assignment.EventAssignment;
 import pl.coderslab.backend.play.Play;
 import pl.coderslab.backend.stage.Stage;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -44,6 +47,14 @@ public class Event {
 
     @NotNull
     private String description;
+
+    @OneToMany(
+            mappedBy = "event",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<EventAssignment> assignments = new ArrayList<>();
 
     @AssertTrue(message = "End date must be after start date")
     public boolean isDateRangeValid() {
