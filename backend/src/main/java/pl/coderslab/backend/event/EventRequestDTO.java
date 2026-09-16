@@ -24,9 +24,7 @@ public record EventRequestDTO(
         @NotNull
         @NumberFormat
         Long stageId,
-
-        @NotNull
-        @NumberFormat
+        
         Long playId,
 
         @NotNull

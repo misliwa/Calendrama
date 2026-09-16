@@ -18,37 +18,35 @@ public class EventService {
     private final StageService stageService;
     private final PlayService playService;
 
-    public List<EventResponseDTO> findAll(){
+    public List<EventResponseDTO> findAll() {
         return eventRepository.findAll()
                 .stream()
                 .map(EventMapper::toDTO)
                 .toList();
     }
 
-    public EventResponseDTO create(EventRequestDTO requestDTO){
+    public EventResponseDTO create(EventRequestDTO requestDTO) {
         Stage stage = stageService.findStageById(requestDTO.stageId());
-        Play play = playService.findPlayById(requestDTO.playId());
 
+        Play play = requestDTO.playId() != null ? playService.findPlayById(requestDTO.playId()) : null;
         Event event = EventMapper.toEntity(requestDTO, play, stage);
-
         event = eventRepository.save(event);
-
         return EventMapper.toDTO(event);
     }
 
-    public Event findEventById(Long id){
+    public Event findEventById(Long id) {
         return eventRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(RESOURCE_NAME, id)
         );
     }
 
-    public EventResponseDTO findById(Long id){
+    public EventResponseDTO findById(Long id) {
         Event event = findEventById(id);
 
         return EventMapper.toDTO(event);
     }
 
-    public EventResponseDTO updateById(Long id, EventRequestDTO requestDTO){
+    public EventResponseDTO updateById(Long id, EventRequestDTO requestDTO) {
         Event event = findEventById(id);
         Stage stage = stageService.findStageById(requestDTO.stageId());
         Play play = playService.findPlayById(requestDTO.playId());
@@ -60,7 +58,7 @@ public class EventService {
         return EventMapper.toDTO(event);
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id) {
         Event event = findEventById(id);
         eventRepository.delete(event);
     }

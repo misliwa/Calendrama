@@ -49,4 +49,12 @@ public class PlayStaffing {
         capabilities.remove(capability);
         capability.setPlayStaffing(null);
     }
+
+    public String getName(){
+        String name = profession.getName();
+        if(roleName != null){
+            name = name.concat(" - ").concat(roleName);
+        }
+        return name;
+    }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 public record EventPossibilityResponseDTO(
         boolean possible,
-        List<EventConflictDTO> conflicts
+        List<EventConflictDTO> conflicts,
+        List<EventWarningDTO> warnings
 ) {
 }

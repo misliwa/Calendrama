@@ -15,7 +15,7 @@ public class EventMapper {
                 event.getStart(),
                 event.getEnd(),
                 StageMapper.toDTO(event.getStage()),
-                PlayMapper.toDTO(event.getPlay()),
+                event.getPlay() != null ? PlayMapper.toDTO(event.getPlay()) : null,
                 event.getDescription(),
                 event.getAssignments().stream().map(EventAssignmentMapper::toDTO).toList()
         );

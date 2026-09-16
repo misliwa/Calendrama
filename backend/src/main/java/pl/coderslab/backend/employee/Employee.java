@@ -39,4 +39,8 @@ public class Employee {
     private Set<Profession> professions = new HashSet<>();
 
     private boolean employed;
+
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
 }

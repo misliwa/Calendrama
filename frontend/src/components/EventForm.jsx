@@ -232,18 +232,31 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                     {possibilityResult && (
                         <Alert
                             color={possibilityResult.possible ? "green" : "red"}
-                            title={
-                                possibilityResult.possible
-                                    ? "Można wystawić spektakl"
-                                    : "Nie można wystawić spektaklu"
+                            title={possibilityResult.possible ? "Można wystawić spektakl" : "Nie można wystawić spektaklu"}>
+
+                            {(possibilityResult.conflicts ?? []).map((conflict) => (
+                                <div
+                                    key={`${conflict.type}-${conflict.message}`}
+                                >
+                                    {conflict.message}
+                                </div>
+                            ))}
+
+                            {possibilityResult.warnings.length > 0 ?
+                                (<div>Uwagi: </div>) : ('')
                             }
-                        >
-                            {!possibilityResult.possible && possibilityResult.conflicts.map((conflict) =>
-                                ( <div
-                                        key={`${conflict.type}-${conflict.message}`}>
-                                        {conflict.message}
-                                </div>))}
+
+                            {(possibilityResult.warnings ?? []).map((warning) => (
+                                <div
+                                    key={`${warning.type}-${warning.message}`}
+                                    style={{color: "orange"}}
+                                >
+                                    {warning.message}
+                                </div>
+                            ))}
                         </Alert>
+
+
                     )}
 
                     <Group justify="flex-end" mt="md">

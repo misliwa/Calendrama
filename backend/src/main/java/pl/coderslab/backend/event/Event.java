@@ -64,4 +64,17 @@ public class Event {
 
         return end.isAfter(start);
     }
+
+    @AssertTrue(message = "Spektakl jest wymagany dla spektaklu i próby")
+    public boolean isPlayValid() {
+        if (type == null) {
+            return true;
+        }
+
+        if (type == EventType.PERFORMANCE || type == EventType.REHEARSAL) {
+            return play != null;
+        }
+
+        return play == null;
+    }
 }

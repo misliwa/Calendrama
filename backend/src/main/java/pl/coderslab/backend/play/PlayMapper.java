@@ -5,7 +5,10 @@ import pl.coderslab.backend.play_staffing.PlayStaffingRequestDTO;
 import pl.coderslab.backend.stage.Stage;
 
 public class PlayMapper {
-    public static PlayResponseDTO toDTO(Play play){
+    public static PlayResponseDTO toDTO(Play play) {
+        if (play == null) {
+            return null;
+        }
         return new PlayResponseDTO(
                 play.getId(),
                 play.getTitle(),
@@ -17,7 +20,7 @@ public class PlayMapper {
         );
     }
 
-    public static Play toEntity(PlayRequestDTO playResponseDTO, Stage stage){
+    public static Play toEntity(PlayRequestDTO playResponseDTO, Stage stage) {
         return Play.builder()
                 .title(playResponseDTO.title())
                 .description(playResponseDTO.description())
@@ -27,7 +30,7 @@ public class PlayMapper {
                 .build();
     }
 
-    public static PlayDetailsResponseDTO toDetailedDTO(Play play){
+    public static PlayDetailsResponseDTO toDetailedDTO(Play play) {
         return new PlayDetailsResponseDTO(
                 play.getId(),
                 play.getTitle(),
@@ -42,7 +45,7 @@ public class PlayMapper {
         );
     }
 
-    public static Play detailedToEntity(PlayDetailsRequestDTO playDetailsDTO, Stage stage){
+    public static Play detailedToEntity(PlayDetailsRequestDTO playDetailsDTO, Stage stage) {
         return Play.builder()
                 .title(playDetailsDTO.title())
                 .description(playDetailsDTO.description())

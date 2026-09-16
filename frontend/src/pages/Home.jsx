@@ -53,7 +53,7 @@ function Home() {
         const payload = {
             ...values,
             stageId: Number(values.stageId),
-            playId: Number(values.playId),
+            playId: values.playId ? Number(values.playId) : null,
             start: values.start.replace(" ", "T"),
             end: values.end.replace(" ", "T")
         };
