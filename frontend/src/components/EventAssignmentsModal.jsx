@@ -16,26 +16,6 @@ function EventAssignmentsModal({opened, onClose, onSubmit, staffingData}) {
         initialValues: {},
     });
 
-    useEffect(() => {
-        if (opened && staffingData && employees.length > 0) {
-            const initialValues = {};
-
-            staffingData.forEach((staffing) => {
-                const availableEmployees = employees.filter(employee =>
-                    staffing.capabilities.some(capability => capability.employee.id === employee.id)
-                );
-
-                if (availableEmployees.length > 0) {
-                    initialValues[staffing.id] = availableEmployees[0].id.toString();
-                } else {
-                    initialValues[staffing.id] = '';
-                }
-            });
-
-            form.setValues(initialValues);
-        }
-    }, [opened, staffingData, employees]);
-
     const handleClose = () => {
         form.reset();
         onClose();
