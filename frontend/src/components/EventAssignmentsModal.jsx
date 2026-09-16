@@ -1,11 +1,11 @@
-import {Button, Checkbox, Group, Modal, MultiSelect, TextInput, Input, Text, Select} from "@mantine/core";
+import {Button, Group, Modal, Select} from "@mantine/core";
 import {useForm} from "@mantine/form";
-import {useEffect} from "react";
-import StaffingAccordion from "./StaffingAccordion.jsx";
+
 import {useCrud} from "../hooks/useCrud.jsx";
 import {employeesApi} from "../api/employees.js";
+import {useEffect} from "react";
 
-function EventAssignmentsModal({opened, onClose, onSubmit, staffingData}) {
+function EventAssignmentsModal({opened, onClose, onSubmit, staffingData, assignments}) {
 
     const {
         items: employees
@@ -15,6 +15,20 @@ function EventAssignmentsModal({opened, onClose, onSubmit, staffingData}) {
         mode: 'controlled',
         initialValues: {},
     });
+
+    useEffect(() => { if (!opened || staffingData.length === 0) { return; }
+
+        const assignmentValues = {};
+
+        assignments?.forEach((assignment) => {
+            assignmentValues[String(assignment.playStaffing.id)] =
+                String(assignment.employee.id);
+        });
+
+        form.setValues(assignmentValues);
+
+
+    }, [opened, assignments, staffingData]);
 
     const handleClose = () => {
         form.reset();

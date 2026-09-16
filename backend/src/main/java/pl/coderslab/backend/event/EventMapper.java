@@ -1,5 +1,6 @@
 package pl.coderslab.backend.event;
 
+import pl.coderslab.backend.event_assignment.EventAssignmentMapper;
 import pl.coderslab.backend.play.Play;
 import pl.coderslab.backend.play.PlayMapper;
 import pl.coderslab.backend.stage.Stage;
@@ -15,7 +16,8 @@ public class EventMapper {
                 event.getEnd(),
                 StageMapper.toDTO(event.getStage()),
                 PlayMapper.toDTO(event.getPlay()),
-                event.getDescription()
+                event.getDescription(),
+                event.getAssignments().stream().map(EventAssignmentMapper::toDTO).toList()
         );
     }
 

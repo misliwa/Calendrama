@@ -6,7 +6,7 @@ import pl.coderslab.backend.play_staffing.PlayStaffingResponseDTO;
 
 public record EventAssignmentResponseDTO(
         Long id,
-        EventResponseDTO event,
+        Long eventId,
         EmployeeResponseDTO employee,
         PlayStaffingResponseDTO playStaffing,
         ConfirmationStatus confirmationStatus

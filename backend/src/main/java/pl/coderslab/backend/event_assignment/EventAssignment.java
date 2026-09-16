@@ -1,14 +1,16 @@
 package pl.coderslab.backend.event_assignment;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import pl.coderslab.backend.employee.Employee;
 import pl.coderslab.backend.event.Event;
 import pl.coderslab.backend.play_staffing.PlayStaffing;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "event_assignments")
 public class EventAssignment {

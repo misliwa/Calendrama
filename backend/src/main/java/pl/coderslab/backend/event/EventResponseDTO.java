@@ -1,9 +1,11 @@
 package pl.coderslab.backend.event;
 
+import pl.coderslab.backend.event_assignment.EventAssignmentResponseDTO;
 import pl.coderslab.backend.play.PlayResponseDTO;
 import pl.coderslab.backend.stage.StageDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record EventResponseDTO(
         Long id,
@@ -20,6 +22,8 @@ public record EventResponseDTO(
 
         PlayResponseDTO play,
 
-        String description
+        String description,
+
+        List<EventAssignmentResponseDTO> assignments
         ) {
 }

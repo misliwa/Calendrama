@@ -8,6 +8,7 @@ import EventAssignmentsModal from "./EventAssignmentsModal.jsx";
 import {playStaffingsApi} from "../api/playStaffing.js";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {employeesApi} from "../api/employees.js";
+import {useParentChildCrud} from "../hooks/useParentChildCrud.jsx";
 
 function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
 
@@ -130,16 +131,7 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
         }
         const loadStaffings = async () => {
             const staffings = await playStaffingsApi.findAllById(currentPlayId);
-            setStaffingData(
-                staffings.map(staffing => ({
-                    ...staffing,
-                    clientId: crypto.randomUUID(),
-                    capabilities: staffing.capabilities ? staffing.capabilities.map(capability => ({
-                        ...capability,
-                        clientId: crypto.randomUUID()
-                    })) : []
-                }))
-            );
+            setStaffingData(staffings);
         };
         loadStaffings();
 
@@ -147,11 +139,10 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
 
     const {
         opened: assignmentModalOpened,
-        editedItem: editedPlay,
         openCreateModal: openCreateAssignmentModal,
         openEditModal: openEditAssignmentModal,
         closeModal: closeAssignmentModal
-    } = useCrudModal();
+    } = useParentChildCrud();
 
     return (
         <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
@@ -218,11 +209,12 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                         opened={assignmentModalOpened}
                         onClose={closeAssignmentModal}
                         staffingData={staffingData}
+                        assignments={eventToEdit?.assignments}
                     />
 
                     <Group justify="flex-end" mt="md">
-                        {currentPlayId ? (
-                            <Button type="button" color="green" onClick={openCreateAssignmentModal}>Pracownicy</Button>
+                        {(currentPlayId && eventToEdit) ? (
+                            <Button type="button" color="green" onClick={() => openCreateAssignmentModal(eventToEdit)}>Pracownicy</Button>
                         ) : null}
 
                         {eventToEdit ? (
