@@ -20,6 +20,10 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
     }));
 
     const [staffingData, setStaffingData] = useState([]);
+    const [currentAssignments, setCurrentAssignments] = useState([]);
+    useEffect(() => {
+        setCurrentAssignments(eventToEdit?.assignments ?? []);
+    }, [eventToEdit]);
 
     const form = useForm({
         mode: 'controlled',
@@ -216,8 +220,9 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                 opened={assignmentModalOpened}
                 onClose={closeAssignmentModal}
                 staffingData={staffingData}
-                assignments={eventToEdit?.assignments}
+                assignments={currentAssignments}
                 eventId={eventToEdit?.id}
+                onAssignmentsUpdated={setCurrentAssignments}
             />
         </Box>
     );

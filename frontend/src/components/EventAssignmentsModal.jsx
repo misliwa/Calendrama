@@ -6,7 +6,7 @@ import {employeesApi} from "../api/employees.js";
 import {useEffect} from "react";
 import {eventsApi} from "../api/events.js";
 
-function EventAssignmentsModal({opened, onClose, staffingData, assignments, eventId}) {
+function EventAssignmentsModal({opened, onClose, staffingData, assignments, eventId, onAssignmentsUpdated}) {
 
     const {
         items: employees
@@ -44,12 +44,19 @@ function EventAssignmentsModal({opened, onClose, staffingData, assignments, even
     }
 
     const handleSubmit = async (values) => {
-        const assignmentsRequest = Object.entries(values).filter(([, employeeId]) => employeeId)
+        const assignmentsRequest = Object.entries(values)
+            .filter(([, employeeId]) => employeeId)
             .map(([playStaffingId, employeeId]) => ({
-            playStaffingId: Number(playStaffingId),
-            employeeId: Number(employeeId),
-        }));
-        await eventsApi.updateAssignments(eventId, assignmentsRequest);
+                playStaffingId: Number(playStaffingId),
+                employeeId: Number(employeeId),
+            }));
+
+        const updatedAssignments = await eventsApi.updateAssignments(
+            eventId,
+            assignmentsRequest
+        );
+
+        onAssignmentsUpdated(updatedAssignments);
         handleClose();
     };
 
