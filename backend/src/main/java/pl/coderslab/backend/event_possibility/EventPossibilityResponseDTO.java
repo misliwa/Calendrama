@@ -1,7 +1,9 @@
 package pl.coderslab.backend.event_possibility;
 
+import java.util.List;
+
 public record EventPossibilityResponseDTO(
-        boolean available,
-        boolean stageAvailable
+        boolean possible,
+        List<EventConflictDTO> conflicts
 ) {
 }

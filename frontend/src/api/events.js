@@ -1,5 +1,6 @@
 import {createBasicCrudApi} from "./basicCrud.js";
 import {ApiError} from "./ApiError.js";
+import BASE_URL from "./api.js";
 
 export const eventColumns = [
     {
@@ -39,7 +40,7 @@ const basicApi = createBasicCrudApi("events");
 
 const updateAssignments = async (eventId, assignments) => {
     const response = await fetch(
-        `http://localhost:8080/api/events/${eventId}/assignments`,
+        `${BASE_URL}/events/${eventId}/assignments`,
         {
             method: "PUT",
             headers: {

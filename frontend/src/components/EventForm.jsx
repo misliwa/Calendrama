@@ -1,4 +1,4 @@
-import {Box, Button, Group, Select, Stack, TextInput} from "@mantine/core";
+import {Alert, Box, Button, Group, Select, Stack, TextInput} from "@mantine/core";
 import {useForm} from "@mantine/form";
 import {useEffect, useState} from "react";
 import {DateTimePicker} from "@mantine/dates";
@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import EventAssignmentsModal from "./EventAssignmentsModal.jsx";
 import {playStaffingsApi} from "../api/playStaffing.js";
 import {useDisclosure} from "@mantine/hooks";
+import {checkPossibility} from "../api/eventAvailability.js";
 
 function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
 
@@ -142,6 +143,31 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
         }
     ] = useDisclosure(false);
 
+    const [possibilityResult, setPossibilityResult] = useState(null);
+
+    const handleCheckPossibility = async () => {
+        const validation = form.validate();
+
+        if (validation.hasErrors) {
+            return;
+        }
+
+        const possibilityRequest = {
+            playId: Number(currentPlayId),
+            start: form.values.start.replace(" ", "T"),
+            end: form.values.end.replace(" ", "T"),
+            excludedEventId: eventToEdit?.id ?? null
+        };
+
+        const result = await checkPossibility(possibilityRequest);
+        console.log(result);
+        setPossibilityResult(result);
+    };
+
+    useEffect(() => {
+        setPossibilityResult(null);
+    }, [currentPlayId, form.values.start, form.values.end]);
+
     return (
         <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
             <form onSubmit={form.onSubmit(onSubmit)}>
@@ -203,7 +229,29 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                         {...form.getInputProps('description')}
                     />
 
+                    {possibilityResult && (
+                        <Alert
+                            color={possibilityResult.possible ? "green" : "red"}
+                            title={
+                                possibilityResult.possible
+                                    ? "Można wystawić spektakl"
+                                    : "Nie można wystawić spektaklu"
+                            }
+                        >
+                            {!possibilityResult.possible && possibilityResult.conflicts.map((conflict) =>
+                                ( <div
+                                        key={`${conflict.type}-${conflict.message}`}>
+                                        {conflict.message}
+                                </div>))}
+                        </Alert>
+                    )}
+
                     <Group justify="flex-end" mt="md">
+                        {currentPlayId ? (
+                            <Button type="button" color="orange" onClick={handleCheckPossibility}>Sprawdź możliwość
+                                wystawienia</Button>
+                        ) : null}
+
                         {(currentPlayId && eventToEdit) ? (
                             <Button type="button" color="green" onClick={openAssignmentModal}>Pracownicy</Button>
                         ) : null}
