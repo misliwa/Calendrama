@@ -4,8 +4,9 @@ import {useForm} from "@mantine/form";
 import {useCrud} from "../hooks/useCrud.jsx";
 import {employeesApi} from "../api/employees.js";
 import {useEffect} from "react";
+import {eventsApi} from "../api/events.js";
 
-function EventAssignmentsModal({opened, onClose, onSubmit, staffingData, assignments}) {
+function EventAssignmentsModal({opened, onClose, staffingData, assignments, eventId}) {
 
     const {
         items: employees
@@ -16,9 +17,16 @@ function EventAssignmentsModal({opened, onClose, onSubmit, staffingData, assignm
         initialValues: {},
     });
 
-    useEffect(() => { if (!opened || staffingData.length === 0) { return; }
+    useEffect(() => {
+        if (!opened || staffingData.length === 0) {
+            return;
+        }
 
         const assignmentValues = {};
+
+        staffingData.forEach((staffing) => {
+            assignmentValues[String(staffing.id)] = "";
+        });
 
         assignments?.forEach((assignment) => {
             assignmentValues[String(assignment.playStaffing.id)] =
@@ -35,16 +43,23 @@ function EventAssignmentsModal({opened, onClose, onSubmit, staffingData, assignm
         onClose();
     }
 
+    const handleSubmit = async (values) => {
+        const assignmentsRequest = Object.entries(values).filter(([, employeeId]) => employeeId)
+            .map(([playStaffingId, employeeId]) => ({
+            playStaffingId: Number(playStaffingId),
+            employeeId: Number(employeeId),
+        }));
+        await eventsApi.updateAssignments(eventId, assignmentsRequest);
+        handleClose();
+    };
+
     return (
         <Modal
             opened={opened}
             onClose={handleClose}
             title={`Pracownicy wydarzenia`}
         >
-            <form onSubmit={form.onSubmit(async (values) => {
-                await onSubmit(values);
-                handleClose();
-            })}>
+            <form onSubmit={form.onSubmit(handleSubmit)}>
                 {staffingData.map((staffing) => {
                     const staffingName = staffing.roleName
                         ? `${staffing.profession.name} - ${staffing.roleName}`
@@ -56,8 +71,6 @@ function EventAssignmentsModal({opened, onClose, onSubmit, staffingData, assignm
                             value: employee.id.toString(),
                             label: `${employee.id}. ${employee.firstName} ${employee.lastName}`,
                         }));
-
-                    console.log(staffing);
 
                     return (
                         <Select

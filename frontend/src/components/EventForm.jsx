@@ -3,12 +3,9 @@ import {useForm} from "@mantine/form";
 import {useEffect, useState} from "react";
 import {DateTimePicker} from "@mantine/dates";
 import dayjs from "dayjs";
-import {useCrudModal} from "../hooks/useCrudModal.jsx";
 import EventAssignmentsModal from "./EventAssignmentsModal.jsx";
 import {playStaffingsApi} from "../api/playStaffing.js";
-import {useCrud} from "../hooks/useCrud.jsx";
-import {employeesApi} from "../api/employees.js";
-import {useParentChildCrud} from "../hooks/useParentChildCrud.jsx";
+import {useDisclosure} from "@mantine/hooks";
 
 function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
 
@@ -21,10 +18,6 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
         value: String(play.id),
         label: `id. ${play.id}. ${play.title}`,
     }));
-
-    const {
-        items: employees
-    } = useCrud(employeesApi);
 
     const [staffingData, setStaffingData] = useState([]);
 
@@ -137,12 +130,13 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
 
     }, [currentPlayId]);
 
-    const {
-        opened: assignmentModalOpened,
-        openCreateModal: openCreateAssignmentModal,
-        openEditModal: openEditAssignmentModal,
-        closeModal: closeAssignmentModal
-    } = useParentChildCrud();
+    const [
+        assignmentModalOpened,
+        {
+            open: openAssignmentModal,
+            close: closeAssignmentModal
+        }
+    ] = useDisclosure(false);
 
     return (
         <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
@@ -205,16 +199,9 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                         {...form.getInputProps('description')}
                     />
 
-                    <EventAssignmentsModal
-                        opened={assignmentModalOpened}
-                        onClose={closeAssignmentModal}
-                        staffingData={staffingData}
-                        assignments={eventToEdit?.assignments}
-                    />
-
                     <Group justify="flex-end" mt="md">
                         {(currentPlayId && eventToEdit) ? (
-                            <Button type="button" color="green" onClick={() => openCreateAssignmentModal(eventToEdit)}>Pracownicy</Button>
+                            <Button type="button" color="green" onClick={openAssignmentModal}>Pracownicy</Button>
                         ) : null}
 
                         {eventToEdit ? (
@@ -225,6 +212,13 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                     </Group>
                 </Stack>
             </form>
+            <EventAssignmentsModal
+                opened={assignmentModalOpened}
+                onClose={closeAssignmentModal}
+                staffingData={staffingData}
+                assignments={eventToEdit?.assignments}
+                eventId={eventToEdit?.id}
+            />
         </Box>
     );
 }

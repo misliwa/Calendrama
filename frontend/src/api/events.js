@@ -1,4 +1,5 @@
 import {createBasicCrudApi} from "./basicCrud.js";
+import {ApiError} from "./ApiError.js";
 
 export const eventColumns = [
     {
@@ -34,5 +35,34 @@ export const eventColumns = [
         getValue: event => event.description
     }
 ];
+const basicApi = createBasicCrudApi("events");
 
-export const eventsApi = createBasicCrudApi("events");
+const updateAssignments = async (eventId, assignments) => {
+    const response = await fetch(
+        `http://localhost:8080/api/events/${eventId}/assignments`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(assignments),
+        }
+    );
+
+    const body = await response.json();
+
+    if (!response.ok) {
+        throw new ApiError(
+            body.error?.message ?? "Wystąpił błąd API",
+            response.status,
+            body.error?.code
+        );
+    }
+
+    return body;
+};
+
+export const eventsApi = {
+    ...basicApi,
+    updateAssignments,
+};
