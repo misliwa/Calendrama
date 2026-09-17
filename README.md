@@ -160,7 +160,7 @@ npm run dev
 
 ## Autor
 
-Projekt wykonany przez Mikołaja Śliwę w ramach bootcampu Java Developer jako projekt końcowy prezentujący umiejętności tworzenia aplikacji pełnostackowych z wykorzystaniem Spring Boot, React oraz relacyjnych baz danych.
+Projekt wykonany przez Mikołaja Śliwę w ramach bootcampu Java Developer jako projekt końcowy prezentujący umiejętności tworzenia aplikacji z wykorzystaniem Spring Boot, oraz relacyjnych baz danych.
 
 ---
 
