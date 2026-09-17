@@ -49,6 +49,17 @@ public class EmployeeUnavailabilityService {
     }
 
     public EmployeeUnavailabilityResponseDTO updateById(Long employeeId, Long id, EmployeeUnavailabilityRequestDTO requestDTO) {
+        if(eventAssignmentRepository.existsEmployeeEventConflict(
+                employeeId,
+                requestDTO.startDateTime(),
+                requestDTO.endDateTime(),
+                null
+        )){
+            throw new EmployeeEventConflictException(
+                    "Nie można zapisać niedostępności. Pracownik jest przypisany do wydarzenia w tym czasie."
+            );
+        }
+
         EmployeeUnavailability unavailability = findByIdAndEmployeeId(id, employeeId);
 
         EmployeeUnavailabilityMapper.updateEntity(unavailability, requestDTO);

@@ -170,7 +170,7 @@ function Employees() {
                     columns={unavailabilityColumns}
                     data={employeesUnavailabilities}
                     onAdd={() => handleOpenAddUnavailabilityModal(employeeInDrawer)}
-                    onEdit={(unavailability) => handleOpenEditUnavailabilityModal(employeeInDrawer, unavailability)}
+                    onEdit={handleOpenEditUnavailabilityModal}
                     onDelete={(unavailabilityId) => deleteUnavailability(employeeInDrawer.id, unavailabilityId)}
                     onDeleteSelected={(unavailabilityIds) => deleteSelectedUnavailabilities(employeeInDrawer.id, unavailabilityIds)}
                 />
