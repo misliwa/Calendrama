@@ -2,6 +2,8 @@ package pl.coderslab.backend.event;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import pl.coderslab.backend.event_assignment.EventAssignmentRepository;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
 import pl.coderslab.backend.play.Play;
 import pl.coderslab.backend.play.PlayService;
@@ -9,6 +11,7 @@ import pl.coderslab.backend.stage.Stage;
 import pl.coderslab.backend.stage.StageService;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -46,12 +49,36 @@ public class EventService {
         return EventMapper.toDTO(event);
     }
 
+    @Transactional
     public EventResponseDTO updateById(Long id, EventRequestDTO requestDTO) {
         Event event = findEventById(id);
-        Stage stage = stageService.findStageById(requestDTO.stageId());
-        Play play = playService.findPlayById(requestDTO.playId());
 
-        EventMapper.updateEntity(event, requestDTO, stage, play);
+        Long previousPlayId = event.getPlay() != null
+                ? event.getPlay().getId()
+                : null;
+
+        Long requestedPlayId = requestDTO.playId();
+
+        boolean playChanged = !Objects.equals(previousPlayId, requestedPlayId);
+
+        if (playChanged) {
+            event.getAssignments().clear();
+        }
+
+        Stage stage = stageService.findStageById(
+                requestDTO.stageId()
+        );
+
+        Play play = requestedPlayId != null
+                ? playService.findPlayById(requestedPlayId)
+                : null;
+
+        EventMapper.updateEntity(
+                event,
+                requestDTO,
+                stage,
+                play
+        );
 
         event = eventRepository.save(event);
 

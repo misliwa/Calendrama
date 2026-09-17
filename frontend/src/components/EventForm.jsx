@@ -22,26 +22,22 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
 
     const [staffingData, setStaffingData] = useState([]);
     const [currentAssignments, setCurrentAssignments] = useState([]);
+    const [playChanged, setPlayChanged] = useState(false);
     useEffect(() => {
         setCurrentAssignments(eventToEdit?.assignments ?? []);
+        setPlayChanged(false);
     }, [eventToEdit]);
 
     const form = useForm({
         mode: 'controlled',
         initialValues: {
             title: '',
-            stageId: stages[0].value ?? '',
+            stageId: stageOptions[0]?.value ?? '',
             playId: '',
             type: '',
             start: dayjs().format('YYYY-MM-DD HH:mm:ss'),
             end: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
             description: '',
-        },
-
-        onValuesChange: (values) => {
-            if (!['PERFORMANCE', 'REHEARSAL'].includes(values.type)) {
-                form.setFieldValue('playId', '');
-            }
         },
 
         validate: {
@@ -77,8 +73,10 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
         if (eventToEdit) {
             form.setValues({
                 title: eventToEdit.title,
-                stageId: eventToEdit.stage.id,
-                playId: eventToEdit.play?.id ?? '',
+                stageId: String(eventToEdit.stage.id),
+                playId: eventToEdit.play
+                    ? String(eventToEdit.play.id)
+                    : '',
                 type: eventToEdit.type,
                 start: eventToEdit.start.replace("T", " "),
                 end: eventToEdit.end.replace("T", " "),
@@ -87,8 +85,8 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
         } else {
             form.setValues({
                 title: '',
-                stageId: stages[0].value ?? '',
-                playId: plays[0].value ?? '',
+                stageId: '',
+                playId: '',
                 type: 'PERFORMANCE',
                 start: dayjs().format('YYYY-MM-DD HH:mm:ss'),
                 end: dayjs().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
@@ -101,26 +99,13 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
     const currentType = form.values.type;
 
     useEffect(() => {
-        if (currentType && !['PERFORMANCE', 'REHEARSAL'].includes(currentType)) {
+        const isPlayEvent = ['PERFORMANCE', 'REHEARSAL'].includes(currentType);
+
+        if (!isPlayEvent && currentPlayId) {
             form.setFieldValue('playId', '');
             form.setFieldValue('title', '');
-            return;
         }
-
-        if (!currentPlayId) return;
-
-        const selectedPlay = plays.find(play => String(play.id) === String(currentPlayId));
-        if (!selectedPlay) return;
-
-        const associatedStageId = selectedPlay?.stageId || selectedPlay?.stage?.id;
-        if (associatedStageId) {
-            form.setFieldValue('stageId', String(associatedStageId));
-        }
-
-        const suffix = currentType === 'PERFORMANCE' ? 'Spektakl' : 'Próba';
-        form.setFieldValue('title', `${selectedPlay.title} - ${suffix}`);
-
-    }, [currentType, currentPlayId, plays]);
+    }, [currentType]);
 
 
     useEffect(() => {
@@ -167,6 +152,39 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
         setPossibilityResult(null);
     }, [currentPlayId, form.values.start, form.values.end]);
 
+    const handlePlayChange = (playId) => {
+        form.setFieldValue('playId', playId ?? '');
+        setCurrentAssignments([]);
+        setPlayChanged(true);
+
+        if (!playId) {
+            return;
+        }
+
+        const selectedPlay = plays.find(
+            play => String(play.id) === String(playId)
+        );
+
+        if (!selectedPlay) {
+            return;
+        }
+
+        const suffix = form.values.type === 'PERFORMANCE'
+            ? 'Spektakl'
+            : 'Próba';
+
+        form.setFieldValue('title', `${selectedPlay.title} - ${suffix}`);
+
+        const stageId =
+            selectedPlay.stageId ?? selectedPlay.stage?.id;
+
+        if (stageId) {
+            form.setFieldValue('stageId', String(stageId));
+        }
+    };
+
+    console.log("playId:", form.values.playId); console.log("playOptions:", playOptions); console.log("plays:", plays);
+
     return (
         <Box h="100%" style={{display: 'flex', flexDirection: 'column', minHeight: 0}}>
             <form onSubmit={form.onSubmit(onSubmit)}>
@@ -189,8 +207,10 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                             placeholder="Spektakl"
                             clearable
                             searchable
+                            onChange={handlePlayChange}
                             data={playOptions}
-                            {...form.getInputProps('playId')}
+                            value={form.values.playId}
+                            error={form.errors.playId}
                         />
                     )}
 
@@ -264,7 +284,7 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
                                 wystawienia</Button>
                         ) : null}
 
-                        {(currentPlayId && eventToEdit) ? (
+                        {(currentPlayId && eventToEdit && !playChanged) ? (
                             <Button type="button" color="green" onClick={openAssignmentModal}>Pracownicy</Button>
                         ) : null}
 
