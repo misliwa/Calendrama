@@ -69,11 +69,9 @@ function Employees() {
 
         try {
             if (editedEmployee) {
-                console.log(payload);
                 await updateItem(editedEmployee.id, payload);
                 closeModal();
             } else {
-                console.log(payload);
                 await createItem(payload);
                 closeModal();
             }

@@ -13,7 +13,6 @@ function UnavailabilityModal({opened, onClose, onSubmit, employee, editedUnavail
                 startDateTime: values.startDateTime.replace(' ', 'T'),
                 endDateTime: values.endDateTime.replace(' ', 'T')
             };
-            console.log(payload);
             await onSubmit(employeeId, payload);
         } catch (error) {
             console.error('Nie udało się zapisać zajętości:', error);
