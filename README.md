@@ -108,6 +108,10 @@ Backend odpowiada za logikę biznesową, walidację danych oraz komunikację z b
 
 ---
 
+## Architektura bazy danych
+![img.png](img.png)
+---
+
 ## Przykładowy scenariusz
 
 Pracownik teatru chce zaplanować wystawienie spektaklu.
