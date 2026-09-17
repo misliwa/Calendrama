@@ -160,7 +160,6 @@ function EventForm({onSubmit, onDelete, eventToEdit, stages, plays}) {
         };
 
         const result = await checkPossibility(possibilityRequest);
-        console.log(result);
         setPossibilityResult(result);
     };
 
