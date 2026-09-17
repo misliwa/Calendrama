@@ -107,6 +107,8 @@ export function useParentChildCrud(api) {
         }
     }
 
+    const clearError = () => { setError(null); };
+
     return {
         items,
         error,
@@ -116,6 +118,7 @@ export function useParentChildCrud(api) {
         updateItem,
         deleteItem,
         deleteSelectedItems,
-        getItemById
+        getItemById,
+        clearError
     };
 }

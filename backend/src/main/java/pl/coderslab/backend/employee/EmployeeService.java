@@ -3,6 +3,8 @@ package pl.coderslab.backend.employee;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.coderslab.backend.event_assignment.EventAssignmentRepository;
+import pl.coderslab.backend.exception.IllegalDeleteException;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
 import pl.coderslab.backend.profession.Profession;
 import pl.coderslab.backend.profession.ProfessionRepository;
@@ -18,6 +20,7 @@ public class EmployeeService {
     private static final String RESOURCE_NAME = Employee.class.getSimpleName();
     private final EmployeeRepository employeeRepository;
     private final ProfessionService professionService;
+    private final EventAssignmentRepository eventAssignmentRepository;
 
     public List<EmployeeResponseDTO> findAll() {
         return employeeRepository.findAll()
@@ -60,6 +63,12 @@ public class EmployeeService {
 
 
     public void deleteById(Long id) {
+        if(eventAssignmentRepository.existsByEmployee_Id(id)){
+            throw new IllegalDeleteException(
+                    "Nie można usunąć pracownika przypisanego do wydarzeń."
+            );
+        }
+
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(RESOURCE_NAME, id)

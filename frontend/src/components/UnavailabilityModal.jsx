@@ -1,10 +1,10 @@
 import {useForm} from "@mantine/form";
-import {Button, Group, Modal, TextInput} from "@mantine/core";
+import {Button, Group, Modal, TextInput, Alert} from "@mantine/core";
 import { DateTimePicker} from '@mantine/dates';
 import dayjs from "dayjs";
 import {useEffect} from "react";
 
-function UnavailabilityModal({opened, onClose, onSubmit, employee, editedUnavailability}) {
+function UnavailabilityModal({opened, onClose, onSubmit, employee, editedUnavailability, error}) {
 
     const handleSubmit = async (employeeId, values) => {
         try {
@@ -15,7 +15,6 @@ function UnavailabilityModal({opened, onClose, onSubmit, employee, editedUnavail
             };
             console.log(payload);
             await onSubmit(employeeId, payload);
-            handleClose();
         } catch (error) {
             console.error('Nie udało się zapisać zajętości:', error);
         }
@@ -77,8 +76,12 @@ function UnavailabilityModal({opened, onClose, onSubmit, employee, editedUnavail
         <Modal
             opened={opened}
             onClose={handleClose}
-            title={`${editedUnavailability ? "Dodaj" : "Edytuj"} zajętość dla ${employee?.firstName} ${employee?.lastName}`}
+            title={`${editedUnavailability ? "Edytuj" : "Dodaj"} zajętość dla ${employee?.firstName} ${employee?.lastName}`}
         >
+            {error && (
+                <Alert color="red" title="Nie można zapisać zajętości" variant="light" mb="md" >
+                    {error.message}
+                </Alert>)}
             <form onSubmit={form.onSubmit((values => handleSubmit(employee.id, values)))}>
 
                <DateTimePicker

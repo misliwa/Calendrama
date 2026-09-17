@@ -2,6 +2,8 @@ package pl.coderslab.backend.stage;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.coderslab.backend.event.EventRepository;
+import pl.coderslab.backend.exception.IllegalDeleteException;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
 import pl.coderslab.backend.profession.Profession;
 
@@ -12,6 +14,7 @@ import java.util.Optional;
 @Service
 public class StageService {
     private final StageRepository repository;
+    private final EventRepository eventRepository;
     private final String RESOURCE_NAME = Stage.class.getSimpleName();
 
     public List<StageDTO> findAll() {
@@ -29,7 +32,7 @@ public class StageService {
         return StageMapper.toDTO(stage);
     }
 
-    public Stage findStageById(Long id){
+    public Stage findStageById(Long id) {
         return repository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(RESOURCE_NAME, id)
         );
@@ -54,6 +57,11 @@ public class StageService {
     }
 
     public void deleteById(Long id) {
+        if (eventRepository.existsByPlay_Id(id)) {
+            throw new IllegalDeleteException(
+                    "Nie można usunąć sceny przypisanej do wydarzeń."
+            );
+        }
         Stage stage = repository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(RESOURCE_NAME, id)

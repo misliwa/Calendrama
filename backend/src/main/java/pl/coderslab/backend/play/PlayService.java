@@ -3,6 +3,8 @@ package pl.coderslab.backend.play;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.coderslab.backend.event.EventRepository;
+import pl.coderslab.backend.exception.IllegalDeleteException;
 import pl.coderslab.backend.exception.ResourceNotFoundException;
 import pl.coderslab.backend.play_staffing.PlayStaffing;
 import pl.coderslab.backend.play_staffing.PlayStaffingRequestDTO;
@@ -25,6 +27,7 @@ public class PlayService {
     private static final String RESOURCE_NAME = Play.class.getSimpleName();
     private final ProfessionService professionService;
     private final PlayStaffingCapabilityService capabilityService;
+    private final EventRepository eventRepository;
 
 
     public List<PlayResponseDTO> findAll() {
@@ -105,6 +108,12 @@ public class PlayService {
     }
 
     public void deleteById(Long id) {
+        if(eventRepository.existsByPlay_Id(id)){
+            throw new IllegalDeleteException(
+                    "Nie można usunąć spektaklu przypisanego do wydarzeń."
+            );
+        }
+
         Play play = playRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(RESOURCE_NAME, id)

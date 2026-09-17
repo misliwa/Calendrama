@@ -22,4 +22,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         apiError.setCode(exception.getErrorCode());
         return new ResponseEntity<>(apiError, HttpStatus.UNPROCESSABLE_CONTENT);
     }
+
+    @ExceptionHandler(IllegalDeleteException.class)
+    protected ResponseEntity<Object> handleIllegalDelete(IllegalDeleteException exception) {
+        CustomError apiError = new CustomError(exception);
+        apiError.setCode(exception.getErrorCode());
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(EmployeeEventConflictException.class)
+    protected ResponseEntity<Object> handleEmployeeEventConflict(EmployeeEventConflictException exception) {
+        CustomError apiError = new CustomError(exception);
+        apiError.setCode(exception.getErrorCode());
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_ACCEPTABLE);
+    }
 }

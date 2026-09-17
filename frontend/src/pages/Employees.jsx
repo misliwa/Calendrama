@@ -44,6 +44,9 @@ function Employees() {
         load: loadUnavailabilities,
         deleteItem: deleteUnavailability,
         deleteSelectedItems: deleteSelectedUnavailabilities,
+        error: unavailabilityError,
+        loading: unavailabilityLoading,
+        clearError: clearUnavailabilityError
     } = useParentChildCrud(unavailabilityApi());
 
     const {
@@ -52,7 +55,7 @@ function Employees() {
         openEditModal: openEditUnavailabilityModal,
         itemParent: unavailableEmployee,
         editedItem: editedUnavailability,
-        closeModal: closeUnavailabilityModal
+        closeModal: closeUnavailabilityModal,
     } = useCrudParentChildModal();
 
     const [drawerOpened, {open: openDrawer, close: closeDrawer}] = useDisclosure(false);
@@ -79,14 +82,41 @@ function Employees() {
         }
     };
 
-    const handleUnavailabilitySubmit = async (employeeId, values) => {
-        if (editedUnavailability) {
-            await updateUnavailability(employeeId, editedUnavailability.id, values);
-        } else {
-            await createUnavailability(employeeId, values);
-        }
+    const handleOpenAddUnavailabilityModal = () => {
+        clearUnavailabilityError();
+        openAddUnavailabilityModal(employeeInDrawer);
+    };
+
+    const handleOpenEditUnavailabilityModal = (unavailability) => {
+        clearUnavailabilityError();
+        openEditUnavailabilityModal(
+            employeeInDrawer,
+            unavailability
+        );
+    };
+
+    const handleCloseUnavailabilityModal = () => {
+        clearUnavailabilityError();
         closeUnavailabilityModal();
-    }
+    };
+
+    const handleUnavailabilitySubmit = async (employeeId, values) => {
+        try {
+            if (editedUnavailability) {
+                await updateUnavailability(
+                    employeeId,
+                    editedUnavailability.id,
+                    values
+                );
+            } else {
+                await createUnavailability(employeeId, values);
+            }
+
+            handleCloseUnavailabilityModal();
+        } catch (error) {
+            console.error("Nie udało się zapisać niedostępności:", error);
+        }
+    };
 
     const openDrawerButton = {
         name: "openDrawerButtony",
@@ -139,8 +169,8 @@ function Employees() {
                 <MantineDataTable
                     columns={unavailabilityColumns}
                     data={employeesUnavailabilities}
-                    onAdd={() => openAddUnavailabilityModal(employeeInDrawer)}
-                    onEdit={(unavailability) => openEditUnavailabilityModal(employeeInDrawer, unavailability)}
+                    onAdd={() => handleOpenAddUnavailabilityModal(employeeInDrawer)}
+                    onEdit={(unavailability) => handleOpenEditUnavailabilityModal(employeeInDrawer, unavailability)}
                     onDelete={(unavailabilityId) => deleteUnavailability(employeeInDrawer.id, unavailabilityId)}
                     onDeleteSelected={(unavailabilityIds) => deleteSelectedUnavailabilities(employeeInDrawer.id, unavailabilityIds)}
                 />
@@ -148,10 +178,11 @@ function Employees() {
             </Drawer>
             <UnavailabilityModal
                 opened={unavailabilityModalOpened}
-                onClose={closeUnavailabilityModal}
+                onClose={handleCloseUnavailabilityModal}
                 onSubmit={handleUnavailabilitySubmit}
                 employee={unavailableEmployee}
                 editedUnavailability={editedUnavailability}
+                error={unavailabilityError}
             />
         </Box>
     )

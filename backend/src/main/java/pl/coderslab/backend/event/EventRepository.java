@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
+    boolean existsByPlay_Id(Long playId);
+
     @Query(
             """
                     SELECT COUNT (e) > 0

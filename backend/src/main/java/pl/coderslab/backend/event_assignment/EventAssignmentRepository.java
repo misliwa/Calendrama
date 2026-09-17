@@ -12,6 +12,8 @@ public interface EventAssignmentRepository extends JpaRepository<EventAssignment
 
     void deleteAllByEvent_Id(Long eventId);
 
+    boolean existsByEmployee_Id(Long employeeId);
+
 
     @Query(
             """
